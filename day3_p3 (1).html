@@ -1,0 +1,776 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Day 3 — Exercise 2 | Five Star Bath Solutions Training</title>
+<link href="https://fonts.googleapis.com/css2?family=Barlow:wght@400;500;600;700;800&family=Barlow+Condensed:wght@600;700;800&family=Inter:wght@300;400;500&display=swap" rel="stylesheet">
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Day 3 — OCC Software | Five Star Bath Solutions Training</title>
+<link href="https://fonts.googleapis.com/css2?family=Barlow:wght@400;500;600;700;800&family=Barlow+Condensed:wght@600;700;800&family=Inter:wght@300;400;500&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --blue: #4790CC; --blue-dark: #1F4E79; --blue-deeper: #0D2E4D;
+    --teal: #6FB4A1; --white: #FFFFFF; --off-white: #F7F9FC;
+    --border: #E2E8F0; --text: #1A1A2E; --text-light: #64748B;
+    --success: #2D8C5E; --success-bg: #E8F5EF;
+    --amber: #7B5200; --amber-bg: #FFF8E1;
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body { font-family: 'Inter', sans-serif; background: var(--off-white); color: var(--text); min-height: 100vh; }
+
+  .topnav { background: var(--blue-deeper); height: 60px; display: flex; align-items: center; padding: 0 32px; justify-content: space-between; position: sticky; top: 0; z-index: 200; box-shadow: 0 2px 20px rgba(0,0,0,0.3); }
+  .nav-logo { display: flex; align-items: center; gap: 12px; }
+  .nav-logo-bubble { width: 32px; height: 32px; }
+  .nav-brand { display: flex; flex-direction: column; line-height: 1; }
+  .nav-brand-top { font-family: 'Barlow Condensed', sans-serif; font-size: 11px; font-weight: 600; letter-spacing: 2px; text-transform: uppercase; color: var(--blue); }
+  .nav-brand-bottom { font-family: 'Barlow Condensed', sans-serif; font-size: 18px; font-weight: 800; color: var(--white); }
+  .nav-center { display: flex; flex-direction: column; align-items: center; gap: 4px; }
+  .nav-progress-label { font-size: 10px; color: rgba(255,255,255,0.5); letter-spacing: 1px; text-transform: uppercase; }
+  .nav-progress-track { width: 200px; height: 4px; background: rgba(255,255,255,0.15); border-radius: 2px; overflow: hidden; }
+  .nav-progress-fill { height: 100%; background: var(--teal); border-radius: 2px; }
+  .nav-right { display: flex; align-items: center; gap: 16px; }
+  .nav-rep { text-align: right; }
+  .nav-rep-name { font-family: 'Barlow', sans-serif; font-size: 14px; font-weight: 600; color: var(--white); }
+  .nav-rep-cohort { font-size: 11px; color: rgba(255,255,255,0.4); }
+  .nav-avatar { width: 36px; height: 36px; border-radius: 50%; background: var(--blue); display: flex; align-items: center; justify-content: center; font-family: 'Barlow', sans-serif; font-weight: 700; font-size: 14px; color: white; }
+
+  .week-rail { background: var(--blue-dark); padding: 0 32px; display: flex; align-items: center; border-bottom: 1px solid rgba(255,255,255,0.08); }
+  .week-tab { padding: 14px 24px; font-family: 'Barlow', sans-serif; font-size: 13px; font-weight: 600; color: rgba(255,255,255,0.4); border-bottom: 3px solid transparent; display: flex; align-items: center; gap: 8px; }
+  .week-tab.active { color: var(--white); border-bottom-color: var(--blue); }
+  .week-tab.locked { opacity: 0.3; }
+  .week-badge { font-size: 9px; font-weight: 700; padding: 2px 6px; border-radius: 8px; background: var(--teal); color: white; }
+  .week-badge.locked-badge { background: rgba(255,255,255,0.15); }
+
+  .main { display: grid; grid-template-columns: 260px 1fr; min-height: calc(100vh - 100px); }
+  .sidebar { background: var(--white); border-right: 1px solid var(--border); padding: 24px 0; position: sticky; top: 100px; height: calc(100vh - 100px); overflow-y: auto; }
+  .sidebar-label { font-size: 10px; font-weight: 600; letter-spacing: 1.5px; text-transform: uppercase; color: var(--text-light); padding: 0 24px 12px; }
+  .day-item { padding: 14px 24px; display: flex; align-items: center; gap: 14px; transition: background 0.15s; border-left: 3px solid transparent; }
+  .day-item.active { background: #EBF4FF; border-left-color: var(--blue); }
+  .day-item.locked { opacity: 0.45; cursor: not-allowed; }
+  .day-item.done { opacity: 0.7; }
+  .day-dot { width: 36px; height: 36px; border-radius: 50%; background: var(--off-white); border: 2px solid var(--border); display: flex; align-items: center; justify-content: center; font-family: 'Barlow', sans-serif; font-size: 13px; font-weight: 700; color: var(--text-light); flex-shrink: 0; }
+  .day-item.active .day-dot { background: var(--blue); border-color: var(--blue); color: white; }
+  .day-item.done .day-dot { background: var(--success); border-color: var(--success); color: white; }
+  .day-info { flex: 1; min-width: 0; }
+  .day-title { font-family: 'Barlow', sans-serif; font-size: 14px; font-weight: 600; color: var(--text); }
+  .day-item.active .day-title { color: var(--blue-dark); }
+  .day-sub { font-size: 11px; color: var(--text-light); margin-top: 2px; }
+  .day-pages { display: flex; gap: 3px; margin-top: 6px; }
+  .day-page-pip { width: 6px; height: 6px; border-radius: 50%; background: var(--border); }
+  .day-page-pip.done { background: var(--success); }
+  .day-page-pip.current { background: var(--blue); }
+  .lock-icon { font-size: 12px; color: #CBD5E1; }
+
+  /* SIDEBAR PAGE NAV (for Day 3's 8 pages) */
+  .page-nav-sidebar { padding: 8px 24px 0; border-top: 1px solid var(--border); margin-top: 8px; }
+  .page-nav-label { font-size: 10px; font-weight: 600; letter-spacing: 1.5px; text-transform: uppercase; color: var(--text-light); padding: 12px 0 8px; }
+  .page-nav-item { display: flex; align-items: center; gap: 10px; padding: 9px 0; border-bottom: 1px solid var(--border); cursor: pointer; transition: color 0.15s; text-decoration: none; }
+  .page-nav-item:last-child { border-bottom: none; }
+  .page-nav-item.active .page-nav-text { color: var(--blue); font-weight: 600; }
+  .page-nav-item.done .page-nav-dot { background: var(--success); border-color: var(--success); color: white; }
+  .page-nav-item.active .page-nav-dot { background: var(--blue); border-color: var(--blue); color: white; }
+  .page-nav-dot { width: 20px; height: 20px; border-radius: 50%; background: var(--off-white); border: 1px solid var(--border); display: flex; align-items: center; justify-content: center; font-size: 9px; font-weight: 700; color: var(--text-light); flex-shrink: 0; }
+  .page-nav-text { font-size: 12px; color: var(--text-light); }
+
+  .content { padding: 40px 48px; max-width: 860px; }
+  .breadcrumb { display: flex; align-items: center; gap: 8px; font-size: 12px; color: var(--text-light); margin-bottom: 28px; font-weight: 500; }
+  .breadcrumb-sep { color: var(--border); }
+  .breadcrumb-current { color: var(--blue); }
+  .page-progress { display: flex; align-items: center; gap: 8px; margin-bottom: 32px; }
+  .page-pip { height: 4px; border-radius: 2px; background: var(--border); flex: 1; }
+  .page-pip.done { background: var(--success); }
+  .page-pip.current { background: var(--blue); }
+  .page-pip-label { font-size: 11px; color: var(--text-light); white-space: nowrap; }
+
+  .block { margin-bottom: 32px; animation: fadeUp 0.4s ease forwards; }
+  .section-tag { display: inline-flex; align-items: center; gap: 6px; background: #EBF4FF; color: var(--blue); font-size: 11px; font-weight: 700; letter-spacing: 1px; text-transform: uppercase; padding: 4px 12px; border-radius: 20px; margin-bottom: 10px; }
+  .section-title { font-family: 'Barlow Condensed', sans-serif; font-size: 36px; font-weight: 800; color: var(--blue-dark); line-height: 1.1; }
+  .section-intro { font-size: 15px; color: var(--text-light); line-height: 1.65; margin-top: 8px; max-width: 620px; }
+  .section-divider { border: none; border-top: 2px solid var(--border); margin: 40px 0; }
+
+  .video-wrap { border-radius: 12px; overflow: hidden; box-shadow: 0 8px 32px rgba(0,0,0,0.15); background: #000; position: relative; padding-top: 56.25%; }
+  .video-wrap iframe { position: absolute; top: 0; left: 0; width: 100%; height: 100%; border: none; opacity: 0; transition: opacity 0.4s ease; }
+  .video-wrap iframe.active { opacity: 1; }
+  .video-thumb { position: absolute; inset: 0; z-index: 2; cursor: pointer; display: flex; align-items: center; justify-content: center; background: linear-gradient(135deg, var(--blue-deeper) 0%, var(--blue-dark) 55%, #2E5F8A 100%); transition: opacity 0.35s ease; }
+  .video-thumb.hidden { opacity: 0; pointer-events: none; }
+  .video-thumb-inner { display: flex; flex-direction: column; align-items: center; gap: 18px; text-align: center; padding: 24px; }
+  .play-circle { width: 76px; height: 76px; border-radius: 50%; background: rgba(255,255,255,0.12); border: 2px solid rgba(255,255,255,0.3); display: flex; align-items: center; justify-content: center; transition: all 0.2s; }
+  .video-thumb:hover .play-circle { background: rgba(71,144,204,0.5); border-color: rgba(71,144,204,0.8); transform: scale(1.06); }
+  .play-triangle { width: 0; height: 0; border-top: 13px solid transparent; border-bottom: 13px solid transparent; border-left: 22px solid white; margin-left: 5px; }
+  .thumb-title { font-family: 'Barlow Condensed', sans-serif; font-size: 20px; font-weight: 700; color: white; line-height: 1.2; max-width: 400px; }
+  .thumb-meta { font-size: 12px; color: rgba(255,255,255,0.5); }
+  .video-label { font-family: 'Barlow', sans-serif; font-size: 13px; font-weight: 600; color: var(--text-light); margin-top: 10px; }
+
+  .field-notes { background: var(--white); border: 1px solid var(--border); border-radius: 12px; overflow: hidden; margin-bottom: 32px; }
+  .field-notes-header { padding: 14px 24px; background: linear-gradient(135deg, #0D3320, #1A5C3A); display: flex; align-items: center; gap: 12px; }
+  .field-notes-icon { font-size: 18px; }
+  .field-notes-title { font-family: 'Barlow', sans-serif; font-size: 15px; font-weight: 700; color: white; }
+  .field-notes-sub { font-size: 12px; color: rgba(255,255,255,0.6); margin-top: 1px; }
+  .field-notes-body { padding: 28px; }
+  .fn-section { margin-bottom: 24px; }
+  .fn-section:last-child { margin-bottom: 0; }
+  .fn-heading { font-family: 'Barlow', sans-serif; font-size: 13px; font-weight: 700; letter-spacing: 1px; text-transform: uppercase; color: var(--blue); margin-bottom: 10px; }
+  .fn-text { font-size: 14px; color: var(--text); line-height: 1.7; }
+  .fn-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-top: 8px; }
+  .fn-card { background: var(--off-white); border: 1px solid var(--border); border-radius: 8px; padding: 14px 16px; }
+  .fn-card-title { font-family: 'Barlow', sans-serif; font-size: 13px; font-weight: 700; color: var(--text); margin-bottom: 4px; }
+  .fn-card-desc { font-size: 12px; color: var(--text-light); line-height: 1.5; }
+  .fn-list { list-style: none; display: flex; flex-direction: column; gap: 8px; }
+  .fn-list li { display: flex; align-items: flex-start; gap: 10px; font-size: 14px; color: var(--text); line-height: 1.5; }
+  .fn-list li::before { content: '→'; color: var(--blue); font-weight: 700; flex-shrink: 0; margin-top: 1px; }
+  .fn-callout { background: #EBF4FF; border-left: 4px solid var(--blue); border-radius: 0 8px 8px 0; padding: 14px 18px; font-size: 14px; color: var(--blue-dark); font-style: italic; line-height: 1.6; margin-top: 12px; font-weight: 500; }
+
+  /* EXERCISE / UPLOAD BLOCKS */
+  .exercise-block { background: var(--white); border: 1px solid var(--border); border-radius: 12px; overflow: hidden; }
+  .exercise-header { padding: 16px 24px; display: flex; align-items: center; gap: 12px; background: linear-gradient(135deg, #1A3A5C, #2563A8); }
+  .exercise-header-icon { font-size: 20px; }
+  .exercise-header-text { font-family: 'Barlow', sans-serif; font-size: 15px; font-weight: 700; color: white; }
+  .exercise-header-sub { font-size: 12px; color: rgba(255,255,255,0.6); margin-top: 2px; }
+  .exercise-body { padding: 28px; display: flex; flex-direction: column; gap: 24px; }
+
+  /* STEP LIST */
+  .step-list { list-style: none; display: flex; flex-direction: column; gap: 12px; }
+  .step-list li { display: flex; align-items: flex-start; gap: 14px; font-size: 14px; color: var(--text); line-height: 1.55; }
+  .step-num { display: inline-flex; align-items: center; justify-content: center; width: 24px; height: 24px; border-radius: 50%; background: var(--blue); color: white; font-size: 11px; font-weight: 700; flex-shrink: 0; margin-top: 1px; }
+
+  /* ITEMS CHECKLIST */
+  .items-block { background: var(--off-white); border: 1px solid var(--border); border-radius: 8px; padding: 18px 20px; }
+  .items-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
+  .item-row { display: flex; align-items: center; gap: 8px; font-size: 13px; color: var(--text); font-weight: 500; padding: 3px 0; }
+  .item-row::before { content: ''; width: 7px; height: 7px; border-radius: 50%; background: var(--teal); flex-shrink: 0; }
+  .item-row.wet::before { background: var(--blue); }
+  .item-row.dry::before { background: var(--text-light); }
+  .area-pill { display: inline-block; font-family: 'Barlow', sans-serif; font-size: 10px; font-weight: 700; letter-spacing: 1px; text-transform: uppercase; padding: 3px 10px; border-radius: 12px; margin: 10px 0 4px; }
+  .area-pill.wet { background: rgba(71,144,204,0.12); color: var(--blue-dark); }
+  .area-pill.dry { background: rgba(100,116,139,0.12); color: var(--text-light); }
+
+  /* WARNING / NOTE */
+  .callout-warning { background: var(--amber-bg); border: 1px solid #F0C040; border-radius: 8px; padding: 14px 18px; font-size: 13px; color: var(--amber); display: flex; gap: 10px; align-items: flex-start; line-height: 1.5; }
+  .callout-note { background: #EBF4FF; border-left: 4px solid var(--blue); border-radius: 0 8px 8px 0; padding: 14px 18px; font-size: 13px; color: var(--blue-dark); line-height: 1.6; font-weight: 500; }
+  .callout-pricing { background: var(--amber-bg); border-left: 4px solid #F0C040; border-radius: 0 8px 8px 0; padding: 12px 16px; font-size: 12px; color: var(--amber); }
+
+  /* UPLOAD GATE */
+  .upload-zone { border: 2px dashed var(--border); border-radius: 10px; padding: 28px; text-align: center; cursor: pointer; transition: all 0.2s; background: var(--off-white); }
+  .upload-zone:hover { border-color: var(--blue); background: #EBF4FF; }
+  .upload-zone.filled { border-color: var(--success); border-style: solid; background: var(--success-bg); }
+  .upload-zone input { display: none; }
+  .upload-icon { font-size: 28px; margin-bottom: 8px; }
+  .upload-title { font-family: 'Barlow', sans-serif; font-size: 15px; font-weight: 700; color: var(--text); margin-bottom: 4px; }
+  .upload-sub { font-size: 12px; color: var(--text-light); }
+  .upload-pair { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+  .file-tags { display: flex; flex-wrap: wrap; gap: 6px; justify-content: center; margin-top: 12px; }
+  .file-tag { background: var(--success); color: white; font-size: 11px; font-weight: 600; padding: 3px 10px; border-radius: 12px; font-family: 'Barlow', sans-serif; }
+
+  /* JOB PHOTOS */
+  .job-photos-label { font-family: 'Barlow', sans-serif; font-size: 11px; font-weight: 700; letter-spacing: 1px; text-transform: uppercase; color: var(--text-light); margin-bottom: 8px; }
+  .job-photos-grid { display: grid; gap: 10px; }
+  .job-photos-grid img { width: 100%; border-radius: 8px; object-fit: cover; border: 1px solid var(--border); display: block; }
+  .job-photos-grid.cols-2 { grid-template-columns: 1fr 1fr; }
+  .job-photos-grid.cols-3 { grid-template-columns: 1fr 1fr 1fr; }
+
+  /* MULTI-BATH LAYOUT */
+  .bath-split { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+  .bath-block { border: 1px solid var(--border); border-radius: 10px; overflow: hidden; }
+  .bath-block-header { padding: 10px 16px; font-family: 'Barlow', sans-serif; font-size: 13px; font-weight: 700; letter-spacing: 0.5px; }
+  .bath-block-header.primary { background: var(--blue); color: white; }
+  .bath-block-header.secondary { background: var(--teal); color: white; }
+  .bath-block-body { padding: 14px 16px; background: var(--off-white); }
+
+  /* QUESTION BLOCKS (kept from Day 2 for any reflection questions if needed) */
+  .question-block { display: flex; flex-direction: column; gap: 8px; }
+  .question-label { font-family: 'Barlow', sans-serif; font-size: 15px; font-weight: 600; color: var(--text); line-height: 1.4; }
+  .q-num { display: inline-flex; align-items: center; justify-content: center; width: 22px; height: 22px; border-radius: 50%; background: var(--blue); color: white; font-size: 11px; font-weight: 700; margin-right: 8px; vertical-align: middle; }
+  .question-textarea { width: 100%; min-height: 90px; padding: 14px 16px; border: 1px solid var(--border); border-radius: 8px; font-family: 'Inter', sans-serif; font-size: 14px; color: var(--text); line-height: 1.6; resize: vertical; transition: border-color 0.2s; background: var(--off-white); }
+  .question-textarea:focus { outline: none; border-color: var(--blue); background: white; box-shadow: 0 0 0 3px rgba(71,144,204,0.1); }
+  .question-textarea.answered { border-color: var(--success); background: white; }
+  .char-count { font-size: 11px; color: var(--text-light); text-align: right; }
+  .save-indicator { display: flex; align-items: center; gap: 6px; font-size: 12px; color: var(--success); font-weight: 500; opacity: 0; transition: opacity 0.3s; }
+  .save-indicator.show { opacity: 1; }
+
+  /* PLACEHOLDER VIDEO */
+  .video-placeholder { border-radius: 12px; background: linear-gradient(135deg, #1a2a3a, #1e3a5a); padding: 48px 24px; text-align: center; box-shadow: 0 8px 32px rgba(0,0,0,0.15); }
+  .video-placeholder-icon { font-size: 36px; margin-bottom: 12px; }
+  .video-placeholder-title { font-family: 'Barlow Condensed', sans-serif; font-size: 20px; font-weight: 700; color: white; margin-bottom: 4px; }
+  .video-placeholder-sub { font-size: 12px; color: rgba(255,255,255,0.45); }
+
+  /* NAV FOOTER */
+  .nav-footer { display: flex; align-items: center; justify-content: space-between; margin-top: 48px; padding-top: 28px; border-top: 1px solid var(--border); }
+  .btn-back { display: flex; align-items: center; gap: 8px; padding: 12px 24px; border: 1px solid var(--border); border-radius: 8px; background: var(--white); color: var(--text-light); font-family: 'Barlow', sans-serif; font-size: 14px; font-weight: 600; cursor: pointer; transition: all 0.2s; }
+  .btn-back:hover { border-color: var(--blue); color: var(--blue); }
+  .btn-next { display: flex; align-items: center; gap: 10px; padding: 14px 32px; background: var(--success); color: white; border: none; border-radius: 8px; font-family: 'Barlow', sans-serif; font-size: 15px; font-weight: 700; cursor: pointer; transition: all 0.2s; box-shadow: 0 4px 16px rgba(45,140,94,0.3); }
+  .btn-next:hover { background: #236B47; transform: translateY(-1px); }
+  .btn-next:disabled { opacity: 0.4; cursor: not-allowed; transform: none; background: var(--success); }
+  .page-counter { font-size: 13px; color: var(--text-light); }
+  .progress-note { font-size: 12px; color: var(--text-light); text-align: center; margin-top: 10px; min-height: 18px; }
+
+  @keyframes fadeUp { from { opacity: 0; transform: translateY(16px); } to { opacity: 1; transform: translateY(0); } }
+  .sidebar::-webkit-scrollbar { width: 4px; }
+  .sidebar::-webkit-scrollbar-thumb { background: var(--border); border-radius: 2px; }
+  @media(max-width:700px) { .upload-pair,.bath-split,.fn-grid,.items-grid,.job-photos-grid.cols-2,.job-photos-grid.cols-3 { grid-template-columns: 1fr; } }
+
+  /* ── EMBEDDED FORM SHARED STYLES ─────────────────────────── */
+  .embedded-form-wrap { background: white; border: 1px solid var(--border); border-radius: 12px; overflow: hidden; margin-bottom: 24px; font-family: 'Times New Roman', serif; }
+  .embedded-form-header { background: linear-gradient(135deg, #0D2E4D, #1F4E79); padding: 14px 24px; display: flex; align-items: center; gap: 14px; }
+  .embedded-form-icon { font-size: 20px; }
+  .embedded-form-title { font-family: 'Barlow', sans-serif; font-size: 15px; font-weight: 700; color: white; }
+  .embedded-form-sub { font-size: 11px; color: rgba(255,255,255,0.55); margin-top: 2px; font-family: 'Inter', sans-serif; }
+  .embedded-form-header > div:nth-child(2) { flex: 1; }
+  .embedded-print-btn { display: flex; align-items: center; gap: 6px; padding: 7px 16px; background: var(--teal); color: white; border: none; border-radius: 6px; font-family: 'Barlow', sans-serif; font-size: 12px; font-weight: 700; cursor: pointer; white-space: nowrap; }
+  .embedded-print-btn:hover { background: #5A9A87; }
+  .embedded-form-body { padding: 28px 32px; }
+  /* Upgrade form specifics */
+  .ef-top-row { display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 20px; }
+  .ef-address { font-size: 13px; color: #333; line-height: 1.8; }
+  .ef-program-title { text-align: right; }
+  .ef-table { width: 100%; border-collapse: collapse; margin: 0 0 20px; }
+  .ef-table th { border: 1.5px solid #000; padding: 8px 10px; font-size: 12px; font-weight: 700; text-align: left; background: white; font-family: 'Times New Roman', serif; }
+  .ef-table td { border: 1.5px solid #000; padding: 0; }
+  .ef-input { width: 100%; border: none; padding: 8px 10px; font-size: 13px; font-family: 'Times New Roman', serif; background: transparent; outline: none; }
+  .ef-input:focus { background: rgba(71,144,204,0.06); }
+  .ef-date-block { margin-bottom: 12px; }
+  .ef-date-row { display: flex; align-items: baseline; gap: 8px; margin-bottom: 12px; }
+  .ef-lbl { font-size: 13px; white-space: nowrap; min-width: 160px; font-family: 'Times New Roman', serif; }
+  .ef-date-input { border: none; border-bottom: 1.5px solid #000; font-size: 13px; font-family: 'Times New Roman', serif; background: transparent; outline: none; width: 200px; padding: 2px 4px; }
+  .ef-date-input:focus { border-bottom-color: #4790CC; }
+  .ef-date-match { font-size: 12px; font-weight: 700; margin-top: 4px; }
+  .ef-date-match.warn { color: #c00; }
+  .ef-date-match.ok { color: #2D8C5E; }
+  .ef-sig-row { display: flex; justify-content: space-between; margin: 24px 0; }
+  .ef-sig-col { width: 45%; }
+  .ef-sig-line { border-top: 1.5px solid #000; margin-bottom: 4px; }
+  .ef-sig-label { font-size: 12px; text-align: center; font-family: 'Times New Roman', serif; }
+  .ef-franchisee { margin-top: 24px; border-top: 1px solid #ccc; padding-top: 16px; }
+  .ef-franchisee-title { font-size: 13px; margin-bottom: 12px; font-family: 'Times New Roman', serif; }
+  /* Leave Behind specifics */
+  .lb-wm { position: absolute; border-radius: 50%; background: #D6EAF8; opacity: 0.45; pointer-events: none; }
+  .lb-wm1 { width: 160px; height: 160px; top: 40px; right: 60px; }
+  .lb-wm2 { width: 210px; height: 210px; top: 160px; right: 20px; }
+  .lb-wm3 { width: 270px; height: 270px; top: 320px; right: 60px; }
+  .lb-header-row { display: flex; align-items: flex-start; justify-content: space-between; margin-bottom: 20px; }
+  .lb-field-label { font-size: 12px; font-weight: 700; margin-bottom: 4px; font-family: 'Barlow', sans-serif; }
+  .lb-field-input { border: none; border-bottom: 1.5px solid #000; font-size: 13px; font-family: 'Times New Roman', serif; background: transparent; outline: none; width: 160px; padding: 2px 4px; }
+  .lb-field-input:focus { border-bottom-color: #4790CC; }
+  .lb-cb-row { display: flex; align-items: flex-start; gap: 10px; margin-bottom: 18px; }
+  .lb-cb { width: 14px; height: 14px; border: 1.5px solid #000; flex-shrink: 0; margin-top: 3px; cursor: pointer; display: flex; align-items: center; justify-content: center; font-size: 11px; font-weight: 900; background: white; }
+  .lb-cb.on::after { content: "✓"; }
+  .lb-inline { flex: 1; border: none; border-bottom: 1.5px solid #000; font-size: 13px; font-family: 'Times New Roman', serif; background: transparent; outline: none; padding: 1px 4px; min-width: 0; }
+  .lb-inline:focus { border-bottom-color: #4790CC; }
+  .lb-extra-line { display: block; width: 100%; border: none; border-bottom: 1.5px solid #000; font-size: 13px; font-family: 'Times New Roman', serif; background: transparent; outline: none; padding: 2px 4px; margin-bottom: 12px; }
+  .lb-extra-line:focus { border-bottom-color: #4790CC; }
+  .lb-pkg-name { font-size: 13px; font-weight: 700; padding: 8px 10px; font-family: 'Times New Roman', serif; }
+  .lb-p-input { width: 100%; border: none; padding: 8px 10px; font-size: 13px; font-family: 'Times New Roman', serif; background: transparent; outline: none; text-align: center; }
+  .lb-p-input:focus { background: rgba(71,144,204,0.06); }
+  @media print {
+    .topnav, .week-rail, .sidebar, .breadcrumb, .page-progress, .nav-footer, .progress-note, .section-tag, .section-intro, .block:not(.print-block), .exercise-block, .callout-note, .callout-pricing { display: none !important; }
+    .main { display: block; }
+    .content { padding: 0; max-width: 100%; }
+    .embedded-form-header { background: #1F4E79 !important; -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+    .embedded-form-wrap { border: none; border-radius: 0; margin-bottom: 32px; page-break-inside: avoid; }
+    .lb-wm { -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+  }
+
+</style>
+
+</head>
+<body>
+
+<nav class="topnav">
+  <div class="nav-logo">
+    <div class="nav-logo-bubble"><svg viewBox="0 0 100 130" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <circle cx="38" cy="15" r="12" stroke="#4790CC" stroke-width="8" fill="none"/>
+  <circle cx="65" cy="55" r="22" stroke="#4790CC" stroke-width="8" fill="none"/>
+  <circle cx="38" cy="95" r="32" stroke="#4790CC" stroke-width="8" fill="none"/>
+</svg></div>
+    <div class="nav-brand">
+      <span class="nav-brand-top">Five Star Bath Solutions</span>
+      <span class="nav-brand-bottom">Sales Training</span>
+    </div>
+  </div>
+  <div class="nav-center">
+    <div class="nav-progress-label">Week 1 Progress — Day 3 of 5</div>
+    <div class="nav-progress-track"><div class="nav-progress-fill" style="width:37%"></div></div>
+  </div>
+  <div class="nav-right">
+    <div class="nav-rep">
+      <div class="nav-rep-name" id="repName">Sales Rep</div>
+      <div class="nav-rep-cohort" id="repCohort">Week 1</div>
+    </div>
+    <div class="nav-avatar" id="navAvatar">SR</div>
+  </div>
+</nav>
+
+<div class="week-rail">
+  <div class="week-tab active">Week 1 <span class="week-badge">In Progress</span></div>
+  <div class="week-tab locked">Week 2 <span class="week-badge locked-badge">Locked</span></div>
+</div>
+
+<div class="main">
+  <aside class="sidebar">
+    <div class="sidebar-label">Week 1 — Days</div>
+    <div class="day-item done"><div class="day-dot">✓</div><div class="day-info"><div class="day-title">Day 1 — Who We Are</div><div class="day-sub">Completed</div></div></div>
+    <div class="day-item done"><div class="day-dot">✓</div><div class="day-info"><div class="day-title">Day 2 — What We Sell</div><div class="day-sub">Completed</div></div></div>
+    <div class="day-item active">
+      <div class="day-dot">3</div>
+      <div class="day-info">
+        <div class="day-title">Day 3 — OCC Software</div>
+        <div class="day-sub">Page 3 of 8</div>
+        <div class="day-pages">
+          <div class="day-page-pip done"></div><div class="day-page-pip done"></div><div class="day-page-pip current"></div><div class="day-page-pip "></div><div class="day-page-pip "></div><div class="day-page-pip "></div><div class="day-page-pip "></div><div class="day-page-pip "></div>
+        </div>
+      </div>
+    </div>
+    <div class="day-item locked"><div class="day-dot">4</div><div class="day-info"><div class="day-title">Day 4 — The Presentation</div><div class="day-sub">Unlocks after Day 3</div></div><span class="lock-icon">🔒</span></div>
+    <div class="day-item locked"><div class="day-dot">5</div><div class="day-info"><div class="day-title">Day 5 — Field Ready</div><div class="day-sub">Unlocks after Day 4</div></div><span class="lock-icon">🔒</span></div>
+    <div class="page-nav-sidebar">
+      <div class="page-nav-label">Day 3 Pages</div>
+      <a class="page-nav-item done" href="day3_p1.html">
+          <div class="page-nav-dot">✓</div>
+          <div class="page-nav-text">Intro & Orientation</div>
+        </a>
+<a class="page-nav-item done" href="day3_p2.html">
+          <div class="page-nav-dot">✓</div>
+          <div class="page-nav-text">Exercise 1 — Sales Contract</div>
+        </a>
+<a class="page-nav-item active" href="day3_p3.html">
+          <div class="page-nav-dot">3</div>
+          <div class="page-nav-text">Exercise 2 — Tub Estimate</div>
+        </a>
+<a class="page-nav-item " href="day3_p4.html">
+          <div class="page-nav-dot">4</div>
+          <div class="page-nav-text">Exercise 3 — Complex Shower</div>
+        </a>
+<a class="page-nav-item " href="day3_p5.html">
+          <div class="page-nav-dot">5</div>
+          <div class="page-nav-text">Exercise 4 — Multi-Bath</div>
+        </a>
+<a class="page-nav-item " href="day3_p6.html">
+          <div class="page-nav-dot">6</div>
+          <div class="page-nav-text">Exercises 5 & 6 — California Baths</div>
+        </a>
+<a class="page-nav-item " href="day3_p7.html">
+          <div class="page-nav-dot">7</div>
+          <div class="page-nav-text">Exercise 7 — Walls Only</div>
+        </a>
+<a class="page-nav-item " href="day3_p8.html">
+          <div class="page-nav-dot">8</div>
+          <div class="page-nav-text">Final Submission</div>
+        </a>
+    </div>
+  </aside>
+
+  <main class="content">
+    <div class="breadcrumb">
+      <span>Week 1</span><span class="breadcrumb-sep">›</span>
+      <span>Day 3 — OCC Software</span><span class="breadcrumb-sep">›</span>
+      <span class="breadcrumb-current">Exercise 2 — Tub Estimate + Forms</span>
+    </div>
+    <div class="page-progress">
+      <div class="page-pip done"></div>
+<div class="page-pip done"></div>
+<div class="page-pip current"></div>
+<div class="page-pip"></div>
+<div class="page-pip"></div>
+<div class="page-pip"></div>
+<div class="page-pip"></div>
+<div class="page-pip"></div>
+<span class="page-pip-label">Page 3 of 8</span>
+    </div>
+
+
+    <div class="block">
+      <div class="section-tag">🛁 Exercise 2</div>
+      <div class="section-title">Tub Estimate — Price Presentation + Both Forms</div>
+      <div class="section-intro">Build the estimate, apply promos, capture your price presentation screenshot, then fill out both forms below.</div>
+    </div>
+
+    <div class="block">
+      <div class="exercise-block">
+        <div class="exercise-header">
+          <div class="exercise-header-icon">📋</div>
+          <div>
+            <div class="exercise-header-text">Step 1 — Build the Estimate</div>
+            <div class="exercise-header-sub">Tub build · 9 items</div>
+          </div>
+        </div>
+        <div class="exercise-body">
+          <div class="items-block">
+            <div class="items-grid">
+              <div class="item-row">Tub</div>
+              <div class="item-row">Azzura Bay walls</div>
+              <div class="item-row">4 corner shelves</div>
+              <div class="item-row">Ceiling panel</div>
+              <div class="item-row">Chrome fixtures</div>
+              <div class="item-row">Lahara faucet</div>
+              <div class="item-row">1 grab bar</div>
+              <div class="item-row">Straight curtain rod</div>
+              <div class="item-row dry">16 ft wainscotting (Dry Area)</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="block">
+      <div class="exercise-block">
+        <div class="exercise-header">
+          <div class="exercise-header-icon">📊</div>
+          <div>
+            <div class="exercise-header-text">Step 2 — Screenshot Price Presentation</div>
+            <div class="exercise-header-sub">Apply promos first, then upload your screenshot</div>
+          </div>
+        </div>
+        <div class="exercise-body">
+          <div class="callout-pricing">📌 Pricing varies across different franchises — your numbers may differ.</div>
+          <div class="upload-zone" id="ex2a_upload" onclick="document.getElementById('ex2a_file').click()" style="margin-top:8px;">
+            <input type="file" id="ex2a_file" accept="image/*,.pdf" onchange="handleUpload('ex2a_upload','ex2a_file','ex2a_preview')">
+            <div class="upload-icon">📊</div>
+            <div class="upload-title">Upload Price Presentation Screenshot</div>
+            <div class="upload-sub">After promos applied · Click to browse</div>
+            <div class="file-tags" id="ex2a_preview"></div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="block">
+      <div class="section-tag">📋 Step 3 — Fill Out the Upgrade Form</div>
+      <div class="section-intro" style="margin-bottom:16px;">Use the price presentation you just captured to complete the form below.</div>
+
+<div class="embedded-form-wrap" id="upgradeFormWrap">
+  <div class="embedded-form-header">
+    <div class="embedded-form-icon">📋</div>
+    <div>
+      <div class="embedded-form-title">Corporate Upgrade Form</div>
+      <div class="embedded-form-sub">Fill out using your Price Presentation · Auto-saves as you type</div>
+    </div>
+    <button class="embedded-print-btn" onclick="window.print()">🖨 Print / Save PDF</button>
+  </div>
+  <div class="embedded-form-body">
+    <div class="ef-top-row">
+      <div class="ef-address">6008 14 Mile Rd Warren MI 48092</div>
+      <div class="ef-program-title">
+        <div style="font-size:18px;font-weight:700;line-height:1.2;">Free Upgrade<br>Program</div>
+        <div style="font-size:14px;font-weight:400;margin-top:2px;">2023</div>
+      </div>
+    </div>
+    <table class="ef-table">
+      <thead>
+        <tr>
+          <th style="width:34%">Service</th>
+          <th>Service Price (MSRP)</th>
+          <th>Promo Price (if applicable)</th>
+          <th>New Price with UPGRADE</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr><td><input class="ef-input" type="text" id="uf_s1" oninput="saveUpgradeForm()" /></td><td><input class="ef-input" type="text" id="uf_s1m" oninput="saveUpgradeForm()" /></td><td><input class="ef-input" type="text" id="uf_s1p" oninput="saveUpgradeForm()" /></td><td><input class="ef-input" type="text" id="uf_s1n" oninput="saveUpgradeForm()" /></td></tr>
+        <tr><td><input class="ef-input" type="text" id="uf_s2" oninput="saveUpgradeForm()" /></td><td><input class="ef-input" type="text" id="uf_s2m" oninput="saveUpgradeForm()" /></td><td><input class="ef-input" type="text" id="uf_s2p" oninput="saveUpgradeForm()" /></td><td><input class="ef-input" type="text" id="uf_s2n" oninput="saveUpgradeForm()" /></td></tr>
+        <tr><td><input class="ef-input" type="text" id="uf_s3" oninput="saveUpgradeForm()" /></td><td><input class="ef-input" type="text" id="uf_s3m" oninput="saveUpgradeForm()" /></td><td><input class="ef-input" type="text" id="uf_s3p" oninput="saveUpgradeForm()" /></td><td><input class="ef-input" type="text" id="uf_s3n" oninput="saveUpgradeForm()" /></td></tr>
+        <tr><td><input class="ef-input" type="text" id="uf_s4" oninput="saveUpgradeForm()" /></td><td><input class="ef-input" type="text" id="uf_s4m" oninput="saveUpgradeForm()" /></td><td><input class="ef-input" type="text" id="uf_s4p" oninput="saveUpgradeForm()" /></td><td><input class="ef-input" type="text" id="uf_s4n" oninput="saveUpgradeForm()" /></td></tr>
+      </tbody>
+    </table>
+    <div class="ef-date-block">
+      <div class="ef-date-row">
+        <span class="ef-lbl">Date of initial visit</span>
+        <input class="ef-date-input" type="date" id="uf_d_initial" oninput="checkUpgradeDates()" />
+      </div>
+      <div class="ef-date-row">
+        <span class="ef-lbl">Date of contract</span>
+        <input class="ef-date-input" type="date" id="uf_d_contract" oninput="checkUpgradeDates()" />
+      </div>
+      <div class="ef-date-match" id="uf_dateMatch"></div>
+    </div>
+    <div style="font-size:13px;font-weight:700;margin:12px 0 20px;">***contract date and initial visit date must match***</div>
+    <div class="ef-sig-row">
+      <div class="ef-sig-col"><div class="ef-sig-line"></div><div class="ef-sig-label">Customer Signature</div></div>
+      <div class="ef-sig-col"><div class="ef-sig-line"></div><div class="ef-sig-label">Five Star Bath Solutions Representative</div></div>
+    </div>
+    <div class="ef-franchisee">
+      <div class="ef-franchisee-title">To be filled out by franchisee</div>
+      <div class="ef-date-row">
+        <span class="ef-lbl">Credit Amount</span>
+        <input class="ef-date-input" type="text" id="uf_f_credit" oninput="saveUpgradeForm()" />
+      </div>
+      <div style="font-size:13px;margin:10px 0;">Program number <strong style="text-decoration:underline;">566476</strong> &nbsp;&nbsp; Anticipated Install Date ___________</div>
+      <div style="font-size:13px;margin-bottom:8px;">Franchisee authorized signature</div>
+      <div style="width:260px;border-bottom:1.5px solid #000;margin-bottom:4px;"></div>
+      <div style="font-size:12px;">Franchisee authorized signature</div>
+    </div>
+    <div style="font-size:11px;margin-top:20px;font-style:italic;">*** credit will be applied 30 days after the <em>anticipated</em> install date — submit form with initial order ***</div>
+  </div>
+</div>
+
+    </div>
+
+    <div class="block">
+      <div class="section-tag">📄 Step 4 — Fill Out the Leave Behind Sheet</div>
+      <div class="section-intro" style="margin-bottom:16px;">Complete the Project Alignment Summary using the same price presentation.</div>
+
+<div class="embedded-form-wrap" id="leaveBehindWrap">
+  <div class="embedded-form-header">
+    <div class="embedded-form-icon">📄</div>
+    <div>
+      <div class="embedded-form-title">Leave Behind Sheet — Project Alignment Summary</div>
+      <div class="embedded-form-sub">Fill out using your Price Presentation · Auto-saves as you type</div>
+    </div>
+    <button class="embedded-print-btn" onclick="window.print()">🖨 Print / Save PDF</button>
+  </div>
+  <div class="embedded-form-body" style="position:relative;overflow:hidden;">
+    <div class="lb-wm lb-wm1"></div><div class="lb-wm lb-wm2"></div><div class="lb-wm lb-wm3"></div>
+    <div style="position:relative;z-index:1;">
+      <div class="lb-header-row">
+        <div>
+          <div style="font-family:'Barlow Condensed',sans-serif;font-size:10px;font-weight:600;letter-spacing:3px;text-transform:uppercase;color:#4790CC;">Five Star</div>
+          <div style="font-family:'Barlow Condensed',sans-serif;font-size:22px;font-weight:900;color:#000;line-height:1;">bath<span style="color:#4790CC;">solutions</span>™</div>
+          <div style="font-size:9px;color:#aaa;font-style:italic;margin-top:2px;">affordable transformations. beautiful solutions.</div>
+        </div>
+        <div style="display:flex;gap:32px;">
+          <div>
+            <div class="lb-field-label">Date</div>
+            <input class="lb-field-input" type="date" id="lb_date" oninput="saveLeaveBehind()" />
+            <div class="lb-field-label" style="margin-top:12px;">Representative</div>
+            <input class="lb-field-input" type="text" id="lb_rep" oninput="saveLeaveBehind()" />
+          </div>
+          <div>
+            <div class="lb-field-label">Prepared For</div>
+            <input class="lb-field-input" type="text" id="lb_customer" oninput="saveLeaveBehind()" />
+          </div>
+        </div>
+      </div>
+      <div style="text-align:center;font-size:18px;font-weight:700;margin:16px 0 24px;">Project Alignment Summary</div>
+      <!-- Package -->
+      <div class="lb-cb-row">
+        <div class="lb-cb" id="lb_chk_pkg" onclick="lbToggle('lb_chk_pkg')"></div>
+        <div style="flex:1;">
+          <div style="display:flex;align-items:baseline;gap:6px;">
+            <span style="font-size:14px;font-weight:700;white-space:nowrap;">Package that meets my needs:</span>
+            <input class="lb-inline" type="text" id="lb_pkg" oninput="saveLeaveBehind()" />
+          </div>
+        </div>
+      </div>
+      <!-- Design -->
+      <div class="lb-cb-row">
+        <div class="lb-cb" id="lb_chk_design" onclick="lbToggle('lb_chk_design')"></div>
+        <div style="flex:1;">
+          <div style="display:flex;align-items:baseline;gap:6px;">
+            <span style="font-size:14px;font-weight:700;white-space:nowrap;">Design Details:</span>
+            <input class="lb-inline" type="text" id="lb_d1" oninput="saveLeaveBehind()" />
+          </div>
+          <input class="lb-extra-line" type="text" id="lb_d2" oninput="saveLeaveBehind()" style="margin-top:10px;" />
+          <input class="lb-extra-line" type="text" id="lb_d3" oninput="saveLeaveBehind()" />
+          <input class="lb-extra-line" type="text" id="lb_d4" oninput="saveLeaveBehind()" />
+          <input class="lb-extra-line" type="text" id="lb_d5" oninput="saveLeaveBehind()" />
+        </div>
+      </div>
+      <!-- Guarantee -->
+      <div class="lb-cb-row">
+        <div class="lb-cb" id="lb_chk_guar" onclick="lbToggle('lb_chk_guar')"></div>
+        <div style="flex:1;">
+          <div style="display:flex;align-items:baseline;gap:6px;">
+            <span style="font-size:14px;font-weight:700;white-space:nowrap;">Guarantee:</span>
+            <input class="lb-inline" type="text" id="lb_guar" oninput="saveLeaveBehind()" />
+          </div>
+        </div>
+      </div>
+      <!-- Pricing Table -->
+      <table class="ef-table" style="margin:16px 0;">
+        <thead>
+          <tr><th style="width:26%">Package</th><th>MSRP</th><th>Promo Price</th><th>Promo Payment</th></tr>
+        </thead>
+        <tbody>
+          <tr><td class="lb-pkg-name">Premium</td><td><input class="lb-p-input" id="lb_p1m" oninput="saveLeaveBehind()" /></td><td><input class="lb-p-input" id="lb_p1p" oninput="saveLeaveBehind()" /></td><td><input class="lb-p-input" id="lb_p1x" oninput="saveLeaveBehind()" /></td></tr>
+          <tr><td class="lb-pkg-name">Smart Choice</td><td><input class="lb-p-input" id="lb_p2m" oninput="saveLeaveBehind()" /></td><td><input class="lb-p-input" id="lb_p2p" oninput="saveLeaveBehind()" /></td><td><input class="lb-p-input" id="lb_p2x" oninput="saveLeaveBehind()" /></td></tr>
+          <tr><td class="lb-pkg-name">Performance</td><td><input class="lb-p-input" id="lb_p3m" oninput="saveLeaveBehind()" /></td><td><input class="lb-p-input" id="lb_p3p" oninput="saveLeaveBehind()" /></td><td><input class="lb-p-input" id="lb_p3x" oninput="saveLeaveBehind()" /></td></tr>
+          <tr><td class="lb-pkg-name">Standard</td><td><input class="lb-p-input" id="lb_p4m" oninput="saveLeaveBehind()" /></td><td><input class="lb-p-input" id="lb_p4p" oninput="saveLeaveBehind()" /></td><td><input class="lb-p-input" id="lb_p4x" oninput="saveLeaveBehind()" /></td></tr>
+        </tbody>
+      </table>
+      <!-- Notes -->
+      <div style="margin-top:8px;">
+        <div style="display:flex;align-items:baseline;gap:6px;margin-bottom:12px;">
+          <span style="font-size:14px;font-weight:700;white-space:nowrap;">Notes:</span>
+          <input class="lb-inline" type="text" id="lb_n1" oninput="saveLeaveBehind()" />
+        </div>
+        <input class="lb-extra-line" type="text" id="lb_n2" oninput="saveLeaveBehind()" />
+        <input class="lb-extra-line" type="text" id="lb_n3" oninput="saveLeaveBehind()" />
+      </div>
+    </div>
+  </div>
+</div>
+
+    </div>
+
+    <div class="block">
+      <div class="exercise-block">
+        <div class="exercise-header">
+          <div class="exercise-header-icon">📸</div>
+          <div>
+            <div class="exercise-header-text">Step 5 — Photo Both Printed Forms Together</div>
+            <div class="exercise-header-sub">Print both forms · Place side by side · Upload one photo</div>
+          </div>
+        </div>
+        <div class="exercise-body">
+          <ul class="step-list">
+            <li><span class="step-num">1</span>Use the Print buttons above to print both completed forms</li>
+            <li><span class="step-num">2</span>Lay both sheets together in frame and take a photo</li>
+            <li><span class="step-num">3</span>Upload that photo below</li>
+          </ul>
+          <div class="upload-zone" id="ex2b_upload" onclick="document.getElementById('ex2b_file').click()" style="margin-top:8px;">
+            <input type="file" id="ex2b_file" accept="image/*" onchange="handleUpload('ex2b_upload','ex2b_file','ex2b_preview')">
+            <div class="upload-icon">📸</div>
+            <div class="upload-title">Upload — Both Forms in Frame</div>
+            <div class="upload-sub">One photo with both sheets visible · Click to browse</div>
+            <div class="file-tags" id="ex2b_preview"></div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+
+    <div class="nav-footer">
+      <button class="btn-back" onclick="window.location.href='day3_p2.html'">← Back</button>
+      <span class="page-counter">Page 3 of 8 — Day 3</span>
+      <button class="btn-next" onclick="window.location.href='day3_p4.html'">Next →</button>
+    </div>
+    <div class="progress-note" id="progressNote"></div>
+  </main>
+</div>
+
+<script>
+  window.onload = function() {
+    const rep = JSON.parse(localStorage.getItem('fsbs_rep_info') || '{}');
+    if (rep.name) {
+      document.getElementById('repName').textContent = rep.name;
+      document.getElementById('navAvatar').textContent = rep.name.split(' ').map(n=>n[0]).join('').toUpperCase().slice(0,2);
+    }
+    if (rep.cohort) document.getElementById('repCohort').textContent = rep.cohort + ' · Week 1';
+    restoreUploads(['ex2a_upload','ex2b_upload']); restoreUpgradeForm(); restoreLeaveBehind();
+  };
+
+  function playVideo(wrapperId, src) {
+    const wrapper = document.getElementById(wrapperId);
+    wrapper.querySelector('.video-thumb').classList.add('hidden');
+    const iframe = wrapper.querySelector('iframe');
+    iframe.src = src;
+    iframe.classList.add('active');
+  }
+
+  function handleUpload(zoneId, inputId, previewId) {
+    const zone = document.getElementById(zoneId);
+    const files = document.getElementById(inputId).files;
+    if (!files.length) return;
+    zone.classList.add('filled');
+    const preview = document.getElementById(previewId);
+    preview.innerHTML = '';
+    Array.from(files).forEach(f => {
+      const t = document.createElement('div');
+      t.className = 'file-tag';
+      t.textContent = '✓ ' + f.name;
+      preview.appendChild(t);
+    });
+    const saved = JSON.parse(localStorage.getItem('day3_uploads') || '{}');
+    saved[zoneId] = Array.from(files).map(f => f.name);
+    localStorage.setItem('day3_uploads', JSON.stringify(saved));
+  }
+
+  function restoreUploads(ids) {
+    const saved = JSON.parse(localStorage.getItem('day3_uploads') || '{}');
+    ids.forEach(id => {
+      if (saved[id] && saved[id].length) {
+        const zone = document.getElementById(id);
+        if (zone) {
+          zone.classList.add('filled');
+          const preview = document.getElementById(id + '_preview');
+          if (preview) {
+            saved[id].forEach(name => {
+              const t = document.createElement('div');
+              t.className = 'file-tag';
+              t.textContent = '✓ ' + name;
+              preview.appendChild(t);
+            });
+          }
+        }
+      }
+    });
+  }
+
+  
+  // ── UPGRADE FORM ───────────────────────────────────────────────
+  const UF_KEY = 'fsbs_upgrade_form';
+  let ufTimer = null;
+  function saveUpgradeForm() {
+    clearTimeout(ufTimer);
+    ufTimer = setTimeout(() => {
+      const ids = ['uf_s1','uf_s1m','uf_s1p','uf_s1n','uf_s2','uf_s2m','uf_s2p','uf_s2n',
+                   'uf_s3','uf_s3m','uf_s3p','uf_s3n','uf_s4','uf_s4m','uf_s4p','uf_s4n',
+                   'uf_d_initial','uf_d_contract','uf_f_credit'];
+      const d = {};
+      ids.forEach(id => { const el = document.getElementById(id); if (el) d[id] = el.value; });
+      localStorage.setItem(UF_KEY, JSON.stringify(d));
+    }, 700);
+  }
+  function checkUpgradeDates() {
+    const i = document.getElementById('uf_d_initial')?.value;
+    const c = document.getElementById('uf_d_contract')?.value;
+    const el = document.getElementById('uf_dateMatch');
+    if (!el) return;
+    if (i && c) {
+      if (i === c) { el.textContent = '✓ Dates match'; el.className = 'ef-date-match ok'; }
+      else { el.textContent = '⚠ Dates do not match — they must be the same'; el.className = 'ef-date-match warn'; }
+    } else { el.textContent = ''; }
+    saveUpgradeForm();
+  }
+  function restoreUpgradeForm() {
+    const saved = localStorage.getItem(UF_KEY);
+    if (saved) {
+      const d = JSON.parse(saved);
+      Object.entries(d).forEach(([id, val]) => { const el = document.getElementById(id); if (el && val) el.value = val; });
+      checkUpgradeDates();
+    }
+  }
+  // ── LEAVE BEHIND FORM ──────────────────────────────────────────
+  const LB_KEY = 'fsbs_leave_behind';
+  let lbTimer = null;
+  function lbToggle(id) { document.getElementById(id).classList.toggle('on'); saveLeaveBehind(); }
+  function saveLeaveBehind() {
+    clearTimeout(lbTimer);
+    lbTimer = setTimeout(() => {
+      const ids = ['lb_date','lb_rep','lb_customer','lb_pkg','lb_d1','lb_d2','lb_d3','lb_d4','lb_d5','lb_guar',
+                   'lb_p1m','lb_p1p','lb_p1x','lb_p2m','lb_p2p','lb_p2x','lb_p3m','lb_p3p','lb_p3x','lb_p4m','lb_p4p','lb_p4x',
+                   'lb_n1','lb_n2','lb_n3'];
+      const d = {};
+      ids.forEach(id => { const el = document.getElementById(id); if (el) d[id] = el.value; });
+      d._chk = { pkg: document.getElementById('lb_chk_pkg')?.classList.contains('on'),
+                 design: document.getElementById('lb_chk_design')?.classList.contains('on'),
+                 guar: document.getElementById('lb_chk_guar')?.classList.contains('on') };
+      localStorage.setItem(LB_KEY, JSON.stringify(d));
+    }, 700);
+  }
+  function restoreLeaveBehind() {
+    const ri = JSON.parse(localStorage.getItem('fsbs_rep_info') || '{}');
+    const repEl = document.getElementById('lb_rep');
+    if (ri.name && repEl && !repEl.value) repEl.value = ri.name;
+    const dateEl = document.getElementById('lb_date');
+    if (dateEl && !dateEl.value) dateEl.value = new Date().toISOString().split('T')[0];
+    const saved = localStorage.getItem(LB_KEY);
+    if (saved) {
+      const d = JSON.parse(saved);
+      Object.entries(d).forEach(([id, val]) => {
+        if (id === '_chk') return;
+        const el = document.getElementById(id); if (el && val) el.value = val;
+      });
+      if (d._chk) {
+        if (d._chk.pkg) document.getElementById('lb_chk_pkg')?.classList.add('on');
+        if (d._chk.design) document.getElementById('lb_chk_design')?.classList.add('on');
+        if (d._chk.guar) document.getElementById('lb_chk_guar')?.classList.add('on');
+      }
+    }
+  }
+
+</script>
+</body>
+</html>

@@ -97,6 +97,12 @@
   .fn-section { margin-bottom: 24px; }
   .fn-section:last-child { margin-bottom: 0; }
   .fn-heading { font-family: 'Barlow', sans-serif; font-size: 13px; font-weight: 700; letter-spacing: 1px; text-transform: uppercase; color: var(--blue); margin-bottom: 10px; }
+  .fn-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-top: 8px; }
+  .fn-card { background: var(--off-white); border: 1px solid var(--border); border-radius: 8px; padding: 14px 16px; }
+  .fn-card-title { font-family: 'Barlow', sans-serif; font-size: 13px; font-weight: 700; color: var(--text); margin-bottom: 4px; }
+  .fn-card-desc { font-size: 12px; color: var(--text-light); line-height: 1.5; }
+  .fn-card.highlight { border-color: var(--teal); background: #F0FAF7; }
+  .fn-card.highlight .fn-card-title { color: var(--success); }
   .fn-two-col { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
   .fn-col-good { background: var(--success-bg); border: 1px solid #A8D5BC; border-radius: 8px; padding: 16px; }
   .fn-col-bad { background: #FEF2F2; border: 1px solid #FECACA; border-radius: 8px; padding: 16px; }
@@ -377,12 +383,24 @@
         <div class="field-notes-body">
           <div class="fn-section">
             <div class="fn-heading">The Four Pillars</div>
-            <ul class="fn-list">
-              <li><strong>Trust the Product</strong> — Smart Choice is genuinely superior. Engineered for performance. Backed by a comprehensive warranty. Proven across thousands of installations.</li>
-              <li><strong>Trust the Process</strong> — The S.T.O.R.Y. system works when followed. Customer-centered approach builds trust. Education creates confident decisions. No pressure needed.</li>
-              <li><strong>Trust the Company</strong> — Industry leader. Standing behind work and warranties. Continuous improvement. Values-driven.</li>
-              <li><strong>Trust Yourself</strong> — You've been trained in proven systems. You represent something excellent. Your preparation shows professionalism. You're helping customers make good decisions.</li>
-            </ul>
+            <div class="fn-grid">
+              <div class="fn-card">
+                <div class="fn-card-title">🔩 Trust the Product</div>
+                <div class="fn-card-desc">Smart Choice is genuinely superior. Engineered for performance. Backed by a comprehensive warranty. Proven across thousands of installations.</div>
+              </div>
+              <div class="fn-card">
+                <div class="fn-card-title">🗺️ Trust the Process</div>
+                <div class="fn-card-desc">The S.T.O.R.Y. system works when followed. Customer-centered approach builds trust. Education creates confident decisions. No pressure needed.</div>
+              </div>
+              <div class="fn-card">
+                <div class="fn-card-title">🏢 Trust the Company</div>
+                <div class="fn-card-desc">Industry leader. Standing behind work and warranties. Continuous improvement. Values-driven organization.</div>
+              </div>
+              <div class="fn-card highlight">
+                <div class="fn-card-title">🙌 Trust Yourself</div>
+                <div class="fn-card-desc">You've been trained in proven systems. You represent something excellent. Your preparation shows professionalism. You're helping customers make good decisions.</div>
+              </div>
+            </div>
           </div>
           <div class="fn-section">
             <div class="fn-heading">Internal vs. Performed Confidence</div>

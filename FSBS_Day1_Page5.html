@@ -1,0 +1,390 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Day 1 — Present Conditions | Five Star Bath Solutions Training</title>
+<link href="https://fonts.googleapis.com/css2?family=Barlow:wght@400;500;600;700;800&family=Barlow+Condensed:wght@600;700;800&family=Inter:wght@300;400;500&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --blue: #4790CC; --blue-dark: #1F4E79; --blue-deeper: #0D2E4D;
+    --teal: #6FB4A1; --white: #FFFFFF; --off-white: #F7F9FC;
+    --border: #E2E8F0; --text: #1A1A2E; --text-light: #64748B;
+    --success: #2D8C5E; --success-bg: #E8F5EF;
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body { font-family: 'Inter', sans-serif; background: var(--off-white); color: var(--text); min-height: 100vh; }
+
+  .topnav { background: var(--blue-deeper); height: 60px; display: flex; align-items: center; padding: 0 32px; justify-content: space-between; position: sticky; top: 0; z-index: 200; box-shadow: 0 2px 20px rgba(0,0,0,0.3); }
+  .nav-logo { display: flex; align-items: center; gap: 12px; }
+  .nav-logo-bubble { width: 32px; height: 32px; }
+  .nav-brand { display: flex; flex-direction: column; line-height: 1; }
+  .nav-brand-top { font-family: 'Barlow Condensed', sans-serif; font-size: 11px; font-weight: 600; letter-spacing: 2px; text-transform: uppercase; color: var(--blue); }
+  .nav-brand-bottom { font-family: 'Barlow Condensed', sans-serif; font-size: 18px; font-weight: 800; color: var(--white); }
+  .nav-center { display: flex; flex-direction: column; align-items: center; gap: 4px; }
+  .nav-progress-label { font-size: 10px; color: rgba(255,255,255,0.5); letter-spacing: 1px; text-transform: uppercase; }
+  .nav-progress-track { width: 200px; height: 4px; background: rgba(255,255,255,0.15); border-radius: 2px; overflow: hidden; }
+  .nav-progress-fill { height: 100%; background: var(--teal); border-radius: 2px; }
+  .nav-right { display: flex; align-items: center; gap: 16px; }
+  .nav-rep { text-align: right; }
+  .nav-rep-name { font-family: 'Barlow', sans-serif; font-size: 14px; font-weight: 600; color: var(--white); }
+  .nav-rep-cohort { font-size: 11px; color: rgba(255,255,255,0.4); }
+  .nav-avatar { width: 36px; height: 36px; border-radius: 50%; background: var(--blue); display: flex; align-items: center; justify-content: center; font-family: 'Barlow', sans-serif; font-weight: 700; font-size: 14px; color: white; }
+
+  .week-rail { background: var(--blue-dark); padding: 0 32px; display: flex; align-items: center; border-bottom: 1px solid rgba(255,255,255,0.08); }
+  .week-tab { padding: 14px 24px; font-family: 'Barlow', sans-serif; font-size: 13px; font-weight: 600; color: rgba(255,255,255,0.4); border-bottom: 3px solid transparent; display: flex; align-items: center; gap: 8px; }
+  .week-tab.active { color: var(--white); border-bottom-color: var(--blue); }
+  .week-tab.locked { opacity: 0.3; }
+  .week-badge { font-size: 9px; font-weight: 700; padding: 2px 6px; border-radius: 8px; background: var(--teal); color: white; }
+  .week-badge.locked-badge { background: rgba(255,255,255,0.15); }
+
+  .main { display: grid; grid-template-columns: 260px 1fr; min-height: calc(100vh - 100px); }
+
+  .sidebar { background: var(--white); border-right: 1px solid var(--border); padding: 24px 0; position: sticky; top: 100px; height: calc(100vh - 100px); overflow-y: auto; }
+  .sidebar-label { font-size: 10px; font-weight: 600; letter-spacing: 1.5px; text-transform: uppercase; color: var(--text-light); padding: 0 24px 12px; }
+  .day-item { padding: 14px 24px; display: flex; align-items: center; gap: 14px; transition: background 0.15s; border-left: 3px solid transparent; }
+  .day-item.active { background: #EBF4FF; border-left-color: var(--blue); }
+  .day-item.locked { opacity: 0.45; cursor: not-allowed; }
+  .day-dot { width: 36px; height: 36px; border-radius: 50%; background: var(--off-white); border: 2px solid var(--border); display: flex; align-items: center; justify-content: center; font-family: 'Barlow', sans-serif; font-size: 13px; font-weight: 700; color: var(--text-light); flex-shrink: 0; }
+  .day-item.active .day-dot { background: var(--blue); border-color: var(--blue); color: white; }
+  .day-info { flex: 1; min-width: 0; }
+  .day-title { font-family: 'Barlow', sans-serif; font-size: 14px; font-weight: 600; color: var(--text); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+  .day-item.active .day-title { color: var(--blue-dark); }
+  .day-sub { font-size: 11px; color: var(--text-light); margin-top: 2px; }
+  .day-pages { display: flex; gap: 3px; margin-top: 6px; }
+  .day-page-pip { width: 6px; height: 6px; border-radius: 50%; background: var(--border); }
+  .day-page-pip.done { background: var(--success); }
+  .day-page-pip.current { background: var(--blue); }
+  .lock-icon { font-size: 12px; color: #CBD5E1; }
+
+  .content { padding: 40px 48px; max-width: 860px; }
+  .breadcrumb { display: flex; align-items: center; gap: 8px; font-size: 12px; color: var(--text-light); margin-bottom: 28px; font-weight: 500; }
+  .breadcrumb-sep { color: var(--border); }
+  .breadcrumb-current { color: var(--blue); }
+  .page-progress { display: flex; align-items: center; gap: 8px; margin-bottom: 32px; }
+  .page-pip { height: 4px; border-radius: 2px; background: var(--border); flex: 1; }
+  .page-pip.done { background: var(--success); }
+  .page-pip.current { background: var(--blue); }
+  .page-pip-label { font-size: 11px; color: var(--text-light); white-space: nowrap; }
+  .block { margin-bottom: 32px; animation: fadeUp 0.4s ease forwards; }
+  .section-tag { display: inline-flex; align-items: center; gap: 6px; background: #EBF4FF; color: var(--blue); font-size: 11px; font-weight: 700; letter-spacing: 1px; text-transform: uppercase; padding: 4px 12px; border-radius: 20px; margin-bottom: 10px; }
+  .section-title { font-family: 'Barlow Condensed', sans-serif; font-size: 36px; font-weight: 800; color: var(--blue-dark); line-height: 1.1; }
+  .section-intro { font-size: 15px; color: var(--text-light); line-height: 1.65; margin-top: 8px; max-width: 620px; }
+
+  /* VIDEO */
+  .video-wrap { border-radius: 12px; overflow: hidden; box-shadow: 0 8px 32px rgba(0,0,0,0.15); background: #000; position: relative; padding-top: 56.25%; }
+  .video-wrap iframe { position: absolute; top: 0; left: 0; width: 100%; height: 100%; border: none; opacity: 0; transition: opacity 0.4s ease; }
+  .video-wrap iframe.active { opacity: 1; }
+  .video-thumb { position: absolute; inset: 0; z-index: 2; cursor: pointer; display: flex; align-items: center; justify-content: center; background: linear-gradient(135deg, var(--blue-deeper) 0%, var(--blue-dark) 55%, #2E5F8A 100%); transition: opacity 0.35s ease; }
+  .video-thumb.hidden { opacity: 0; pointer-events: none; }
+  .video-thumb-inner { display: flex; flex-direction: column; align-items: center; gap: 18px; text-align: center; padding: 24px; }
+  .play-circle { width: 76px; height: 76px; border-radius: 50%; background: rgba(255,255,255,0.12); border: 2px solid rgba(255,255,255,0.3); display: flex; align-items: center; justify-content: center; transition: all 0.2s; }
+  .video-thumb:hover .play-circle { background: rgba(71,144,204,0.5); border-color: rgba(71,144,204,0.8); transform: scale(1.06); }
+  .play-triangle { width: 0; height: 0; border-top: 13px solid transparent; border-bottom: 13px solid transparent; border-left: 22px solid white; margin-left: 5px; }
+  .thumb-title { font-family: 'Barlow Condensed', sans-serif; font-size: 20px; font-weight: 700; color: white; line-height: 1.2; max-width: 400px; }
+  .thumb-meta { font-size: 12px; color: rgba(255,255,255,0.5); }
+  .video-label { font-family: 'Barlow', sans-serif; font-size: 13px; font-weight: 600; color: var(--text-light); margin-top: 10px; }
+
+  /* DOWNLOAD */
+  .download-block { display: flex; align-items: center; gap: 16px; background: var(--white); border: 1px solid var(--border); border-radius: 10px; padding: 20px 24px; cursor: pointer; transition: all 0.2s; text-decoration: none; }
+  .download-block:hover { border-color: var(--blue); box-shadow: 0 4px 16px rgba(71,144,204,0.12); transform: translateY(-1px); }
+  .download-icon { width: 52px; height: 52px; border-radius: 10px; background: linear-gradient(135deg, var(--blue-dark), var(--blue)); display: flex; align-items: center; justify-content: center; font-size: 24px; flex-shrink: 0; }
+  .download-info { flex: 1; }
+  .download-name { font-family: 'Barlow', sans-serif; font-size: 16px; font-weight: 700; color: var(--text); margin-bottom: 3px; }
+  .download-desc { font-size: 13px; color: var(--text-light); line-height: 1.4; }
+  .download-arrow { font-size: 20px; color: var(--blue); font-weight: bold; }
+
+  /* CALLOUT */
+  .callout { border-left: 4px solid var(--blue); background: #EBF4FF; border-radius: 0 8px 8px 0; padding: 16px 20px; font-size: 14px; color: var(--blue-dark); font-weight: 500; line-height: 1.6; }
+  .callout.teal { border-left-color: var(--teal); background: #F0F9F6; color: #2A5C4E; }
+
+  /* CONCEPT GRID */
+  .concept-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-top: 20px; }
+  .concept-item { background: var(--white); border: 1px solid var(--border); border-radius: 10px; padding: 18px 20px; border-top: 3px solid var(--blue); }
+  .concept-item.teal-top { border-top-color: var(--teal); }
+  .concept-item-icon { font-size: 22px; margin-bottom: 8px; }
+  .concept-item-title { font-family: 'Barlow', sans-serif; font-size: 14px; font-weight: 700; color: var(--blue-dark); margin-bottom: 6px; }
+  .concept-item.teal-top .concept-item-title { color: #1A4A3C; }
+  .concept-item-desc { font-size: 13px; color: var(--text-light); line-height: 1.55; }
+
+  /* EXERCISE */
+  .exercise-block { background: var(--white); border: 1px solid var(--border); border-radius: 12px; overflow: hidden; }
+  .exercise-header { padding: 16px 24px; display: flex; align-items: center; gap: 12px; background: linear-gradient(135deg, #1A3A5C, #2563A8); }
+  .exercise-header-icon { font-size: 20px; }
+  .exercise-header-text { font-family: 'Barlow', sans-serif; font-size: 15px; font-weight: 700; color: white; }
+  .exercise-header-sub { font-size: 12px; color: rgba(255,255,255,0.6); margin-top: 2px; }
+  .exercise-body { padding: 28px; display: flex; flex-direction: column; gap: 24px; }
+  .question-block { display: flex; flex-direction: column; gap: 8px; }
+  .question-label { font-family: 'Barlow', sans-serif; font-size: 15px; font-weight: 600; color: var(--text); line-height: 1.4; }
+  .q-num { display: inline-flex; align-items: center; justify-content: center; width: 22px; height: 22px; border-radius: 50%; background: var(--blue); color: white; font-size: 11px; font-weight: 700; margin-right: 8px; vertical-align: middle; }
+  .question-textarea { width: 100%; min-height: 90px; padding: 14px 16px; border: 1px solid var(--border); border-radius: 8px; font-family: 'Inter', sans-serif; font-size: 14px; color: var(--text); line-height: 1.6; resize: vertical; transition: border-color 0.2s; background: var(--off-white); }
+  .question-textarea:focus { outline: none; border-color: var(--blue); background: white; box-shadow: 0 0 0 3px rgba(71,144,204,0.1); }
+  .question-textarea.answered { border-color: var(--success); background: white; }
+  .char-count { font-size: 11px; color: var(--text-light); text-align: right; }
+  .save-indicator { display: flex; align-items: center; gap: 6px; font-size: 12px; color: var(--success); font-weight: 500; opacity: 0; transition: opacity 0.3s; }
+  .save-indicator.show { opacity: 1; }
+
+  .nav-footer { display: flex; align-items: center; justify-content: space-between; margin-top: 48px; padding-top: 28px; border-top: 1px solid var(--border); }
+  .btn-back { display: flex; align-items: center; gap: 8px; padding: 12px 24px; border: 1px solid var(--border); border-radius: 8px; background: var(--white); color: var(--text-light); font-family: 'Barlow', sans-serif; font-size: 14px; font-weight: 600; cursor: pointer; transition: all 0.2s; }
+  .btn-back:hover { border-color: var(--blue); color: var(--blue); }
+  .btn-next { display: flex; align-items: center; gap: 10px; padding: 14px 32px; background: var(--blue); color: white; border: none; border-radius: 8px; font-family: 'Barlow', sans-serif; font-size: 15px; font-weight: 700; cursor: pointer; transition: all 0.2s; box-shadow: 0 4px 16px rgba(71,144,204,0.3); }
+  .btn-next:hover { background: var(--blue-dark); transform: translateY(-1px); }
+  .btn-next:disabled { opacity: 0.4; cursor: not-allowed; transform: none; }
+  .page-counter { font-size: 13px; color: var(--text-light); }
+  .progress-note { font-size: 12px; color: var(--text-light); text-align: center; margin-top: 10px; min-height: 18px; }
+
+  @keyframes fadeUp { from { opacity: 0; transform: translateY(16px); } to { opacity: 1; transform: translateY(0); } }
+  .sidebar::-webkit-scrollbar { width: 4px; }
+  .sidebar::-webkit-scrollbar-thumb { background: var(--border); border-radius: 2px; }
+</style>
+</head>
+<body>
+
+<nav class="topnav">
+  <div class="nav-logo">
+    <div class="nav-logo-bubble">
+      <svg viewBox="0 0 100 130" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <circle cx="38" cy="15" r="12" stroke="#4790CC" stroke-width="8" fill="none"/>
+        <circle cx="65" cy="55" r="22" stroke="#4790CC" stroke-width="8" fill="none"/>
+        <circle cx="38" cy="95" r="32" stroke="#4790CC" stroke-width="8" fill="none"/>
+      </svg>
+    </div>
+    <div class="nav-brand">
+      <span class="nav-brand-top">Five Star Bath Solutions</span>
+      <span class="nav-brand-bottom">Sales Training</span>
+    </div>
+  </div>
+  <div class="nav-center">
+    <div class="nav-progress-label">Week 1 Progress — Day 1 of 5</div>
+    <div class="nav-progress-track"><div class="nav-progress-fill" style="width: 52%"></div></div>
+  </div>
+  <div class="nav-right">
+    <div class="nav-rep">
+      <div class="nav-rep-name">Chris McDonough</div>
+      <div class="nav-rep-cohort">COH-20260316 · Week 1</div>
+    </div>
+    <div class="nav-avatar">CM</div>
+  </div>
+</nav>
+
+<div class="week-rail">
+  <div class="week-tab active">Week 1 <span class="week-badge">In Progress</span></div>
+  <div class="week-tab locked">Week 2 <span class="week-badge locked-badge">Locked</span></div>
+</div>
+
+<div class="main">
+  <aside class="sidebar">
+    <div class="sidebar-label">Week 1 — Days</div>
+    <div class="day-item active">
+      <div class="day-dot">1</div>
+      <div class="day-info">
+        <div class="day-title">Day 1 — Who We Are</div>
+        <div class="day-sub">Page 5 of 8</div>
+        <div class="day-pages">
+          <div class="day-page-pip done"></div><div class="day-page-pip done"></div>
+          <div class="day-page-pip done"></div><div class="day-page-pip done"></div>
+          <div class="day-page-pip current"></div><div class="day-page-pip"></div>
+          <div class="day-page-pip"></div><div class="day-page-pip"></div>
+        </div>
+      </div>
+    </div>
+    <div class="day-item locked"><div class="day-dot">2</div><div class="day-info"><div class="day-title">Day 2 — What We Sell</div><div class="day-sub">Unlocks after Day 1</div></div><span class="lock-icon">🔒</span></div>
+    <div class="day-item locked"><div class="day-dot">3</div><div class="day-info"><div class="day-title">Day 3 — Technology</div><div class="day-sub">Unlocks after Day 2</div></div><span class="lock-icon">🔒</span></div>
+    <div class="day-item locked"><div class="day-dot">4</div><div class="day-info"><div class="day-title">Day 4 — Tools & Tech</div><div class="day-sub">Unlocks after Day 3</div></div><span class="lock-icon">🔒</span></div>
+    <div class="day-item locked"><div class="day-dot">5</div><div class="day-info"><div class="day-title">Day 5 — The Presentation</div><div class="day-sub">Unlocks after Day 4</div></div><span class="lock-icon">🔒</span></div>
+  </aside>
+
+  <main class="content">
+    <div class="breadcrumb">
+      <span>Week 1</span><span class="breadcrumb-sep">›</span>
+      <span>Day 1 — Who We Are</span><span class="breadcrumb-sep">›</span>
+      <span class="breadcrumb-current">Page 5 — Present Conditions</span>
+    </div>
+
+    <div class="page-progress">
+      <div class="page-pip done"></div><div class="page-pip done"></div>
+      <div class="page-pip done"></div><div class="page-pip done"></div>
+      <div class="page-pip current"></div><div class="page-pip"></div>
+      <div class="page-pip"></div><div class="page-pip"></div>
+      <span class="page-pip-label">Page 5 of 8</span>
+    </div>
+
+    <!-- HEADER -->
+    <div class="block">
+      <div class="section-tag">🚿 The Bathroom Landscape</div>
+      <div class="section-title">Present Conditions</div>
+      <div class="section-intro">Before you can help a customer transform their bathroom, you need to understand what you're walking into — and why it matters. This section gives you a snapshot of the current landscape and the challenge Five Star was built to solve.</div>
+    </div>
+
+    <!-- VIDEO -->
+    <div class="block">
+      <div class="video-wrap" id="video-present">
+        <div class="video-thumb" onclick="playVideo('video-present','https://drive.google.com/file/d/1BJSCKhe8WUDh0YOjdg5dP19mTaHl3M8d/preview')">
+          <div class="video-thumb-inner">
+            <div class="play-circle"><div class="play-triangle"></div></div>
+            <div class="thumb-title">Present Conditions</div>
+            <div class="thumb-meta">The Current Landscape · Five Star Bath Solutions</div>
+          </div>
+        </div>
+        <iframe id="iframe-video-present" src="" allow="autoplay" allowfullscreen></iframe>
+      </div>
+      <div class="video-label">▶ Present Conditions — The Challenge We're Built to Meet</div>
+    </div>
+
+    <!-- CONCEPT GRID -->
+    <div class="block">
+      <div class="callout">Watch the full video, then review the key concepts below before answering the reflection questions.</div>
+      <div class="concept-grid" style="margin-top: 20px;">
+        <div class="concept-item">
+          <div class="concept-item-icon">💧</div>
+          <div class="concept-item-title">Functional Issues</div>
+          <div class="concept-item-desc">Leaks, mold, damaged tile, failing grout, deteriorating caulk — the problems customers have often been living with for years.</div>
+        </div>
+        <div class="concept-item">
+          <div class="concept-item-icon">🏗️</div>
+          <div class="concept-item-title">California Bath</div>
+          <div class="concept-item-desc">A tub/shower combo with three walls. More complex scoping, different install considerations — you'll see these often.</div>
+        </div>
+        <div class="concept-item teal-top">
+          <div class="concept-item-icon">💦</div>
+          <div class="concept-item-title">Moisture Zones</div>
+          <div class="concept-item-desc">The areas within a shower where moisture damage concentrates — walls, floor, curb, and corners each present differently.</div>
+        </div>
+        <div class="concept-item teal-top">
+          <div class="concept-item-icon">🪞</div>
+          <div class="concept-item-title">Vanity Types</div>
+          <div class="concept-item-desc">Custom vs. pre-fabricated vanities have different scoping implications, timelines, and customer expectations.</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- BATHROOM ASSESSMENT FIELD GUIDE -->
+    <div class="block">
+      <div class="callout teal" style="margin-bottom: 16px;">
+        Download the Bathroom Assessment Field Guide and keep it handy. You'll reference it during your first few appointments until the assessment process becomes second nature.
+      </div>
+      <a class="download-block" href="https://drive.google.com/file/d/1hDykTLQAsQEvxgZIrH6DdtXB7mHC6_MV/view" target="_blank">
+        <div class="download-icon">📋</div>
+        <div class="download-info">
+          <div class="download-name">Bathroom Assessment Field Guide</div>
+          <div class="download-desc">Comprehensive guide for evaluating bathroom conditions and identifying upgrade opportunities. Print this out or save it to your iPad.</div>
+        </div>
+        <div class="download-arrow">↓</div>
+      </a>
+    </div>
+
+    <!-- EXERCISE -->
+    <div class="block">
+      <div class="exercise-block">
+        <div class="exercise-header">
+          <div class="exercise-header-icon">✏️</div>
+          <div>
+            <div class="exercise-header-text">Present Conditions — Reflection</div>
+            <div class="exercise-header-sub">4 questions. Watch the video and review the concepts before answering.</div>
+          </div>
+        </div>
+        <div class="exercise-body">
+
+          <div class="question-block">
+            <div class="question-label"><span class="q-num">1</span>List 3 functional or wear issues a customer may be dealing with in their shower.</div>
+            <textarea class="question-textarea" id="q1" placeholder="Think about what someone with a 10-year-old shower might be living with every day..." oninput="handleInput(this,'q1')" rows="4"></textarea>
+            <div class="char-count" id="q1-count">0 characters</div>
+          </div>
+
+          <div class="question-block">
+            <div class="question-label"><span class="q-num">2</span>What is a California Bath? What makes these bathroom scenarios more complicated?</div>
+            <textarea class="question-textarea" id="q2" placeholder="Describe what it is and what a rep needs to think about differently when scoping one..." oninput="handleInput(this,'q2')" rows="4"></textarea>
+            <div class="char-count" id="q2-count">0 characters</div>
+          </div>
+
+          <div class="question-block">
+            <div class="question-label"><span class="q-num">3</span>Identify 3 different areas within the shower space where customers may be dealing with moisture issues.</div>
+            <textarea class="question-textarea" id="q3" placeholder="Where does water damage tend to show up first? Think about where water sits, pools, or penetrates..." oninput="handleInput(this,'q3')" rows="4"></textarea>
+            <div class="char-count" id="q3-count">0 characters</div>
+          </div>
+
+          <div class="question-block">
+            <div class="question-label"><span class="q-num">4</span>What is the difference between a custom vanity and a pre-fabricated vanity?</div>
+            <textarea class="question-textarea" id="q4" placeholder="Consider how each affects the scope of work, timeline, and customer expectations..." oninput="handleInput(this,'q4')" rows="4"></textarea>
+            <div class="char-count" id="q4-count">0 characters</div>
+          </div>
+
+          <div style="display:flex;align-items:center;justify-content:space-between;padding-top:8px;border-top:1px solid var(--border)">
+            <div class="save-indicator" id="saveIndicator">✓ Answers saved</div>
+            <div style="font-size:12px;color:var(--text-light)">Your answers save as you type</div>
+          </div>
+
+        </div>
+      </div>
+    </div>
+
+    <div class="nav-footer">
+      <button class="btn-back" onclick="prevPage()">← Previous</button>
+      <span class="page-counter">Page 5 of 8</span>
+      <button class="btn-next" id="nextBtn" onclick="nextPage()" disabled>Next Page →</button>
+    </div>
+    <div class="progress-note" id="progressNote">Answer all 4 questions to continue.</div>
+
+  </main>
+</div>
+
+<script>
+  const answers = {q1:'',q2:'',q3:'',q4:''};
+  let saveTimer = null;
+
+  function playVideo(wrapperId, src) {
+    const wrapper = document.getElementById(wrapperId);
+    wrapper.querySelector('.video-thumb').classList.add('hidden');
+    const iframe = wrapper.querySelector('iframe');
+    iframe.src = src;
+    iframe.classList.add('active');
+  }
+
+  function handleInput(el, key) {
+    answers[key] = el.value.trim();
+    document.getElementById(key+'-count').textContent = el.value.length + ' characters';
+    el.classList.toggle('answered', el.value.trim().length > 10);
+    clearTimeout(saveTimer);
+    saveTimer = setTimeout(saveAnswers, 800);
+    checkCompletion();
+  }
+
+  function saveAnswers() {
+    localStorage.setItem('day1_page5_answers', JSON.stringify(answers));
+    const el = document.getElementById('saveIndicator');
+    el.classList.add('show');
+    setTimeout(() => el.classList.remove('show'), 2000);
+  }
+
+  function checkCompletion() {
+    const incomplete = Object.keys(answers).filter(k => answers[k].length <= 10);
+    const done = incomplete.length === 0;
+    document.getElementById('nextBtn').disabled = !done;
+    document.getElementById('progressNote').textContent = done ? '' :
+      incomplete.length + ' question' + (incomplete.length > 1 ? 's' : '') + ' still need' + (incomplete.length === 1 ? 's' : '') + ' an answer.';
+  }
+
+  function prevPage() { window.location.href = 'FSBS_Day1_Page4.html'; }
+  function nextPage() { window.location.href = 'FSBS_Day1_Page6.html'; }
+
+  window.onload = function() {
+    const saved = localStorage.getItem('day1_page5_answers');
+    if (saved) {
+      const data = JSON.parse(saved);
+      Object.keys(data).forEach(key => {
+        if (data[key]) {
+          const el = document.getElementById(key);
+          if (el) {
+            el.value = data[key];
+            answers[key] = data[key];
+            document.getElementById(key+'-count').textContent = data[key].length + ' characters';
+            el.classList.toggle('answered', data[key].length > 10);
+          }
+        }
+      });
+    }
+    checkCompletion();
+  };
+</script>
+</body>
+</html>

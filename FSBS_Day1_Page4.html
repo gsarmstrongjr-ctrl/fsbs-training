@@ -1,0 +1,521 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Day 1 — Team Testimonials & Our Customers | Five Star Bath Solutions Training</title>
+<link href="https://fonts.googleapis.com/css2?family=Barlow:wght@400;500;600;700;800&family=Barlow+Condensed:wght@600;700;800&family=Inter:wght@300;400;500&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --blue: #4790CC; --blue-dark: #1F4E79; --blue-deeper: #0D2E4D;
+    --teal: #6FB4A1; --white: #FFFFFF; --off-white: #F7F9FC;
+    --border: #E2E8F0; --text: #1A1A2E; --text-light: #64748B;
+    --success: #2D8C5E; --success-bg: #E8F5EF;
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body { font-family: 'Inter', sans-serif; background: var(--off-white); color: var(--text); min-height: 100vh; }
+  .topnav { background: var(--blue-deeper); height: 60px; display: flex; align-items: center; padding: 0 32px; justify-content: space-between; position: sticky; top: 0; z-index: 200; box-shadow: 0 2px 20px rgba(0,0,0,0.3); }
+  .nav-logo { display: flex; align-items: center; gap: 12px; }
+  .nav-logo-bubble { width: 32px; height: 32px; }
+  .nav-brand { display: flex; flex-direction: column; line-height: 1; }
+  .nav-brand-top { font-family: 'Barlow Condensed', sans-serif; font-size: 11px; font-weight: 600; letter-spacing: 2px; text-transform: uppercase; color: var(--blue); }
+  .nav-brand-bottom { font-family: 'Barlow Condensed', sans-serif; font-size: 18px; font-weight: 800; color: var(--white); }
+  .nav-center { display: flex; flex-direction: column; align-items: center; gap: 4px; }
+  .nav-progress-label { font-size: 10px; color: rgba(255,255,255,0.5); letter-spacing: 1px; text-transform: uppercase; }
+  .nav-progress-track { width: 200px; height: 4px; background: rgba(255,255,255,0.15); border-radius: 2px; overflow: hidden; }
+  .nav-progress-fill { height: 100%; background: var(--teal); border-radius: 2px; }
+  .nav-right { display: flex; align-items: center; gap: 16px; }
+  .nav-rep { text-align: right; }
+  .nav-rep-name { font-family: 'Barlow', sans-serif; font-size: 14px; font-weight: 600; color: var(--white); }
+  .nav-rep-cohort { font-size: 11px; color: rgba(255,255,255,0.4); }
+  .nav-avatar { width: 36px; height: 36px; border-radius: 50%; background: var(--blue); display: flex; align-items: center; justify-content: center; font-family: 'Barlow', sans-serif; font-weight: 700; font-size: 14px; color: white; }
+  .week-rail { background: var(--blue-dark); padding: 0 32px; display: flex; align-items: center; border-bottom: 1px solid rgba(255,255,255,0.08); }
+  .week-tab { padding: 14px 24px; font-family: 'Barlow', sans-serif; font-size: 13px; font-weight: 600; color: rgba(255,255,255,0.4); border-bottom: 3px solid transparent; display: flex; align-items: center; gap: 8px; }
+  .week-tab.active { color: var(--white); border-bottom-color: var(--blue); }
+  .week-tab.locked { opacity: 0.3; }
+  .week-badge { font-size: 9px; font-weight: 700; padding: 2px 6px; border-radius: 8px; background: var(--teal); color: white; }
+  .week-badge.locked-badge { background: rgba(255,255,255,0.15); }
+  .main { display: grid; grid-template-columns: 260px 1fr; min-height: calc(100vh - 100px); }
+  .sidebar { background: var(--white); border-right: 1px solid var(--border); padding: 24px 0; position: sticky; top: 100px; height: calc(100vh - 100px); overflow-y: auto; }
+  .sidebar-label { font-size: 10px; font-weight: 600; letter-spacing: 1.5px; text-transform: uppercase; color: var(--text-light); padding: 0 24px 12px; }
+  .day-item { padding: 14px 24px; display: flex; align-items: center; gap: 14px; transition: background 0.15s; border-left: 3px solid transparent; }
+  .day-item.active { background: #EBF4FF; border-left-color: var(--blue); }
+  .day-item.locked { opacity: 0.45; cursor: not-allowed; }
+  .day-dot { width: 36px; height: 36px; border-radius: 50%; background: var(--off-white); border: 2px solid var(--border); display: flex; align-items: center; justify-content: center; font-family: 'Barlow', sans-serif; font-size: 13px; font-weight: 700; color: var(--text-light); flex-shrink: 0; }
+  .day-item.active .day-dot { background: var(--blue); border-color: var(--blue); color: white; }
+  .day-info { flex: 1; min-width: 0; }
+  .day-title { font-family: 'Barlow', sans-serif; font-size: 14px; font-weight: 600; color: var(--text); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+  .day-item.active .day-title { color: var(--blue-dark); }
+  .day-sub { font-size: 11px; color: var(--text-light); margin-top: 2px; }
+  .day-pages { display: flex; gap: 3px; margin-top: 6px; }
+  .day-page-pip { width: 6px; height: 6px; border-radius: 50%; background: var(--border); }
+  .day-page-pip.done { background: var(--success); }
+  .day-page-pip.current { background: var(--blue); }
+  .lock-icon { font-size: 12px; color: #CBD5E1; }
+  .content { padding: 40px 48px; max-width: 860px; }
+  .breadcrumb { display: flex; align-items: center; gap: 8px; font-size: 12px; color: var(--text-light); margin-bottom: 28px; font-weight: 500; }
+  .breadcrumb-sep { color: var(--border); }
+  .breadcrumb-current { color: var(--blue); }
+  .page-progress { display: flex; align-items: center; gap: 8px; margin-bottom: 32px; }
+  .page-pip { height: 4px; border-radius: 2px; background: var(--border); flex: 1; }
+  .page-pip.done { background: var(--success); }
+  .page-pip.current { background: var(--blue); }
+  .page-pip-label { font-size: 11px; color: var(--text-light); white-space: nowrap; }
+  .block { margin-bottom: 32px; animation: fadeUp 0.4s ease forwards; }
+  .section-tag { display: inline-flex; align-items: center; gap: 6px; background: #EBF4FF; color: var(--blue); font-size: 11px; font-weight: 700; letter-spacing: 1px; text-transform: uppercase; padding: 4px 12px; border-radius: 20px; margin-bottom: 10px; }
+  .section-title { font-family: 'Barlow Condensed', sans-serif; font-size: 36px; font-weight: 800; color: var(--blue-dark); line-height: 1.1; }
+  .section-intro { font-size: 15px; color: var(--text-light); line-height: 1.65; margin-top: 8px; max-width: 620px; }
+  .section-divider { display: flex; align-items: center; gap: 16px; margin: 40px 0 32px; }
+  .section-divider-line { flex: 1; height: 1px; background: var(--border); }
+  .section-divider-label { font-family: 'Barlow Condensed', sans-serif; font-size: 13px; font-weight: 700; letter-spacing: 1.5px; text-transform: uppercase; color: var(--text-light); white-space: nowrap; }
+
+  /* MISSION BANNER */
+  .mission-banner { background: linear-gradient(135deg, var(--blue-deeper), #1A3A5C); border-radius: 12px; padding: 28px 32px; margin-bottom: 28px; }
+  .mission-eyebrow { font-family: 'Barlow Condensed', sans-serif; font-size: 11px; font-weight: 700; letter-spacing: 2px; text-transform: uppercase; color: var(--teal); margin-bottom: 10px; }
+  .mission-text { font-size: 15px; color: rgba(255,255,255,0.85); line-height: 1.7; }
+  .mission-pillars { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-top: 20px; }
+  .mission-pillar { background: rgba(255,255,255,0.06); border-radius: 8px; padding: 12px 16px; border-left: 3px solid var(--blue); }
+  .mission-pillar-title { font-family: 'Barlow', sans-serif; font-size: 13px; font-weight: 700; color: white; margin-bottom: 4px; }
+  .mission-pillar-desc { font-size: 12px; color: rgba(255,255,255,0.6); line-height: 1.5; }
+
+  /* TESTIMONIAL CARDS */
+  .testimonials-grid { display: flex; flex-direction: column; gap: 16px; }
+  .testimonial-card { background: var(--white); border: 1px solid var(--border); border-radius: 12px; overflow: hidden; transition: box-shadow 0.2s; }
+  .testimonial-card:hover { box-shadow: 0 4px 20px rgba(0,0,0,0.08); }
+  .testimonial-header { padding: 16px 24px; display: flex; align-items: center; gap: 14px; background: var(--off-white); }
+  .testimonial-avatar { width: 44px; height: 44px; border-radius: 50%; background: linear-gradient(135deg, var(--blue-dark), var(--blue)); display: flex; align-items: center; justify-content: center; font-family: 'Barlow', sans-serif; font-size: 16px; font-weight: 800; color: white; flex-shrink: 0; }
+  .testimonial-name { font-family: 'Barlow', sans-serif; font-size: 16px; font-weight: 700; color: var(--text); }
+  .testimonial-location { font-size: 12px; color: var(--text-light); margin-top: 2px; }
+  .testimonial-quote-icon { margin-left: auto; font-size: 28px; color: var(--border); line-height: 1; }
+  .testimonial-toggle { width: 100%; background: none; border: none; border-top: 1px solid var(--border); padding: 12px 24px; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 6px; font-family: 'Barlow', sans-serif; font-size: 12px; font-weight: 600; color: var(--text-light); transition: all 0.2s; }
+  .testimonial-toggle:hover { background: var(--off-white); color: var(--blue); }
+  .testimonial-toggle .arrow { transition: transform 0.25s; display: inline-block; }
+  .testimonial-body { display: none; padding: 20px 24px; }
+  .testimonial-body.open { display: block; }
+  .testimonial-q { margin-bottom: 16px; padding-bottom: 16px; border-bottom: 1px solid var(--border); }
+  .testimonial-q:last-child { margin-bottom: 0; padding-bottom: 0; border-bottom: none; }
+  .testimonial-q-label { font-size: 10px; font-weight: 700; letter-spacing: 1px; text-transform: uppercase; color: var(--blue); margin-bottom: 6px; }
+  .testimonial-q-text { font-size: 14px; color: var(--text); line-height: 1.65; font-style: italic; }
+
+  /* VIDEO */
+  .video-wrap { border-radius: 12px; overflow: hidden; box-shadow: 0 8px 32px rgba(0,0,0,0.15); background: #000; position: relative; padding-top: 56.25%; }
+  .video-wrap iframe { position: absolute; top: 0; left: 0; width: 100%; height: 100%; border: none; opacity: 0; transition: opacity 0.4s ease; }
+  .video-wrap iframe.active { opacity: 1; }
+  .video-thumb { position: absolute; inset: 0; z-index: 2; cursor: pointer; display: flex; align-items: center; justify-content: center; background: linear-gradient(135deg, var(--blue-deeper) 0%, var(--blue-dark) 55%, #2E5F8A 100%); transition: opacity 0.35s ease; }
+  .video-thumb.hidden { opacity: 0; pointer-events: none; }
+  .video-thumb-inner { display: flex; flex-direction: column; align-items: center; gap: 18px; text-align: center; padding: 24px; }
+  .play-circle { width: 76px; height: 76px; border-radius: 50%; background: rgba(255,255,255,0.12); border: 2px solid rgba(255,255,255,0.3); display: flex; align-items: center; justify-content: center; transition: all 0.2s; }
+  .video-thumb:hover .play-circle { background: rgba(71,144,204,0.5); border-color: rgba(71,144,204,0.8); transform: scale(1.06); }
+  .play-triangle { width: 0; height: 0; border-top: 13px solid transparent; border-bottom: 13px solid transparent; border-left: 22px solid white; margin-left: 5px; }
+  .thumb-title { font-family: 'Barlow Condensed', sans-serif; font-size: 20px; font-weight: 700; color: white; line-height: 1.2; max-width: 400px; }
+  .thumb-meta { font-size: 12px; color: rgba(255,255,255,0.5); }
+  .video-label { font-family: 'Barlow', sans-serif; font-size: 13px; font-weight: 600; color: var(--text-light); margin-top: 10px; }
+
+  /* EXERCISE */
+  .exercise-block { background: var(--white); border: 1px solid var(--border); border-radius: 12px; overflow: hidden; margin-top: 24px; }
+  .exercise-header { padding: 16px 24px; display: flex; align-items: center; gap: 12px; }
+  .exercise-header.blue { background: linear-gradient(135deg, #1A3A5C, #2563A8); }
+  .exercise-header.teal { background: linear-gradient(135deg, #1A4A3C, #2D8C5E); }
+  .exercise-header-icon { font-size: 20px; }
+  .exercise-header-text { font-family: 'Barlow', sans-serif; font-size: 15px; font-weight: 700; color: white; }
+  .exercise-header-sub { font-size: 12px; color: rgba(255,255,255,0.6); margin-top: 2px; }
+  .exercise-body { padding: 28px; display: flex; flex-direction: column; gap: 24px; }
+  .question-block { display: flex; flex-direction: column; gap: 8px; }
+  .question-label { font-family: 'Barlow', sans-serif; font-size: 15px; font-weight: 600; color: var(--text); line-height: 1.4; }
+  .question-label .q-num { display: inline-flex; align-items: center; justify-content: center; width: 22px; height: 22px; border-radius: 50%; background: var(--blue); color: white; font-size: 11px; font-weight: 700; margin-right: 8px; vertical-align: middle; }
+  .question-label .q-num.teal { background: var(--teal); }
+  .question-textarea { width: 100%; min-height: 90px; padding: 14px 16px; border: 1px solid var(--border); border-radius: 8px; font-family: 'Inter', sans-serif; font-size: 14px; color: var(--text); line-height: 1.6; resize: vertical; transition: border-color 0.2s; background: var(--off-white); }
+  .question-textarea:focus { outline: none; border-color: var(--blue); background: white; box-shadow: 0 0 0 3px rgba(71,144,204,0.1); }
+  .question-textarea.answered { border-color: var(--success); background: white; }
+  .char-count { font-size: 11px; color: var(--text-light); text-align: right; }
+  .save-indicator { display: flex; align-items: center; gap: 6px; font-size: 12px; color: var(--success); font-weight: 500; opacity: 0; transition: opacity 0.3s; }
+  .save-indicator.show { opacity: 1; }
+  .callout { border-left: 4px solid var(--teal); background: #F0F9F6; border-radius: 0 8px 8px 0; padding: 16px 20px; font-size: 14px; color: #2A5C4E; font-weight: 500; line-height: 1.6; }
+
+  .nav-footer { display: flex; align-items: center; justify-content: space-between; margin-top: 48px; padding-top: 28px; border-top: 1px solid var(--border); }
+  .btn-back { display: flex; align-items: center; gap: 8px; padding: 12px 24px; border: 1px solid var(--border); border-radius: 8px; background: var(--white); color: var(--text-light); font-family: 'Barlow', sans-serif; font-size: 14px; font-weight: 600; cursor: pointer; transition: all 0.2s; }
+  .btn-back:hover { border-color: var(--blue); color: var(--blue); }
+  .btn-next { display: flex; align-items: center; gap: 10px; padding: 14px 32px; background: var(--blue); color: white; border: none; border-radius: 8px; font-family: 'Barlow', sans-serif; font-size: 15px; font-weight: 700; cursor: pointer; transition: all 0.2s; box-shadow: 0 4px 16px rgba(71,144,204,0.3); }
+  .btn-next:hover { background: var(--blue-dark); transform: translateY(-1px); }
+  .btn-next:disabled { opacity: 0.4; cursor: not-allowed; transform: none; }
+  .page-counter { font-size: 13px; color: var(--text-light); }
+  .progress-note { font-size: 12px; color: var(--text-light); text-align: center; margin-top: 10px; min-height: 18px; }
+
+  @keyframes fadeUp { from { opacity: 0; transform: translateY(16px); } to { opacity: 1; transform: translateY(0); } }
+  .sidebar::-webkit-scrollbar { width: 4px; }
+  .sidebar::-webkit-scrollbar-thumb { background: var(--border); border-radius: 2px; }
+</style>
+</head>
+<body>
+
+<nav class="topnav">
+  <div class="nav-logo">
+    <div class="nav-logo-bubble">
+      <svg viewBox="0 0 100 130" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <circle cx="38" cy="15" r="12" stroke="#4790CC" stroke-width="8" fill="none"/>
+        <circle cx="65" cy="55" r="22" stroke="#4790CC" stroke-width="8" fill="none"/>
+        <circle cx="38" cy="95" r="32" stroke="#4790CC" stroke-width="8" fill="none"/>
+      </svg>
+    </div>
+    <div class="nav-brand">
+      <span class="nav-brand-top">Five Star Bath Solutions</span>
+      <span class="nav-brand-bottom">Sales Training</span>
+    </div>
+  </div>
+  <div class="nav-center">
+    <div class="nav-progress-label">Week 1 Progress — Day 1 of 5</div>
+    <div class="nav-progress-track"><div class="nav-progress-fill" style="width: 38%"></div></div>
+  </div>
+  <div class="nav-right">
+    <div class="nav-rep">
+      <div class="nav-rep-name">Chris McDonough</div>
+      <div class="nav-rep-cohort">COH-20260316 · Week 1</div>
+    </div>
+    <div class="nav-avatar">CM</div>
+  </div>
+</nav>
+
+<div class="week-rail">
+  <div class="week-tab active">Week 1 <span class="week-badge">In Progress</span></div>
+  <div class="week-tab locked">Week 2 <span class="week-badge locked-badge">Locked</span></div>
+</div>
+
+<div class="main">
+  <aside class="sidebar">
+    <div class="sidebar-label">Week 1 — Days</div>
+    <div class="day-item active">
+      <div class="day-dot">1</div>
+      <div class="day-info">
+        <div class="day-title">Day 1 — Who We Are</div>
+        <div class="day-sub">Page 4 of 8</div>
+        <div class="day-pages">
+          <div class="day-page-pip done"></div><div class="day-page-pip done"></div>
+          <div class="day-page-pip done"></div><div class="day-page-pip current"></div>
+          <div class="day-page-pip"></div><div class="day-page-pip"></div>
+          <div class="day-page-pip"></div><div class="day-page-pip"></div>
+        </div>
+      </div>
+    </div>
+    <div class="day-item locked"><div class="day-dot">2</div><div class="day-info"><div class="day-title">Day 2 — What We Sell</div><div class="day-sub">Unlocks after Day 1</div></div><span class="lock-icon">🔒</span></div>
+    <div class="day-item locked"><div class="day-dot">3</div><div class="day-info"><div class="day-title">Day 3 — Technology</div><div class="day-sub">Unlocks after Day 2</div></div><span class="lock-icon">🔒</span></div>
+    <div class="day-item locked"><div class="day-dot">4</div><div class="day-info"><div class="day-title">Day 4 — Tools & Tech</div><div class="day-sub">Unlocks after Day 3</div></div><span class="lock-icon">🔒</span></div>
+    <div class="day-item locked"><div class="day-dot">5</div><div class="day-info"><div class="day-title">Day 5 — The Presentation</div><div class="day-sub">Unlocks after Day 4</div></div><span class="lock-icon">🔒</span></div>
+  </aside>
+
+  <main class="content">
+    <div class="breadcrumb">
+      <span>Week 1</span><span class="breadcrumb-sep">›</span>
+      <span>Day 1 — Who We Are</span><span class="breadcrumb-sep">›</span>
+      <span class="breadcrumb-current">Page 4 — Team Testimonials & Our Customers</span>
+    </div>
+
+    <div class="page-progress">
+      <div class="page-pip done"></div><div class="page-pip done"></div>
+      <div class="page-pip done"></div><div class="page-pip current"></div>
+      <div class="page-pip"></div><div class="page-pip"></div>
+      <div class="page-pip"></div><div class="page-pip"></div>
+      <span class="page-pip-label">Page 4 of 8</span>
+    </div>
+
+    <div class="block">
+      <div class="section-tag">🎙 Hear It From the Field</div>
+      <div class="section-title">Team Testimonials</div>
+      <div class="section-intro">These are people who were sitting exactly where you are now. Read what they say — and pay attention to what surprised them.</div>
+    </div>
+
+    <div class="block">
+      <div class="mission-banner">
+        <div class="mission-eyebrow">Our Mission</div>
+        <div class="mission-text">At Five Star Bath Solutions, we don't just hire sales representatives — we partner with professionals who share our commitment to putting customers at the center of everything we do.</div>
+        <div class="mission-pillars">
+          <div class="mission-pillar"><div class="mission-pillar-title">Customer-Centric Philosophy</div><div class="mission-pillar-desc">We earn the right to talk by listening first</div></div>
+          <div class="mission-pillar"><div class="mission-pillar-title">Proven Sales System</div><div class="mission-pillar-desc">Share information naturally — never pressure</div></div>
+          <div class="mission-pillar"><div class="mission-pillar-title">Unmatched Support</div><div class="mission-pillar-desc">Daily emails, weekly training, tools that work</div></div>
+          <div class="mission-pillar"><div class="mission-pillar-title">Heart-Centered Leadership</div><div class="mission-pillar-desc">Lead with both heart and head — always</div></div>
+        </div>
+      </div>
+    </div>
+
+    <div class="block">
+      <div class="testimonials-grid">
+
+        <div class="testimonial-card">
+          <div class="testimonial-header">
+            <div class="testimonial-avatar">SB</div>
+            <div><div class="testimonial-name">Shelby Ball</div><div class="testimonial-location">Seattle, WA</div></div>
+            <div class="testimonial-quote-icon">"</div>
+          </div>
+          <button class="testimonial-toggle" onclick="toggleCard(this)">Read Shelby's Story <span class="arrow">▼</span></button>
+          <div class="testimonial-body">
+            <div class="testimonial-q"><div class="testimonial-q-label">What made you decide to join Five Star?</div><div class="testimonial-q-text">I was self-employed for many years and getting burnt out with work/life balance. FSB has been a joy — helping customers update their bathrooms or make them safer so they can stay in their home longer is rewarding in many different ways.</div></div>
+            <div class="testimonial-q"><div class="testimonial-q-label">How has the sales system changed how you connect?</div><div class="testimonial-q-text">Putting customers at the center of the story instead of talking all about the company was a change. I have noticed that customers feel more comfortable, and less resistant to the sales process.</div></div>
+            <div class="testimonial-q"><div class="testimonial-q-label">One moment that really stuck with you?</div><div class="testimonial-q-text">A nice lady who was getting taken advantage of by one of our competitors. We were able to take care of her with a much better solution. She was so happy and grateful that she became emotional — and it felt very rewarding.</div></div>
+            <div class="testimonial-q"><div class="testimonial-q-label">What would you say to someone thinking about joining?</div><div class="testimonial-q-text">Five Star Bath has been a wonderful experience. Our products and warranties are exactly what customers actually need. Our selling process feels very natural.</div></div>
+          </div>
+        </div>
+
+        <div class="testimonial-card">
+          <div class="testimonial-header">
+            <div class="testimonial-avatar">CS</div>
+            <div><div class="testimonial-name">Chuck Spencer</div><div class="testimonial-location">Atlanta, GA</div></div>
+            <div class="testimonial-quote-icon">"</div>
+          </div>
+          <button class="testimonial-toggle" onclick="toggleCard(this)">Read Chuck's Story <span class="arrow">▼</span></button>
+          <div class="testimonial-body">
+            <div class="testimonial-q"><div class="testimonial-q-label">What made you decide to join Five Star?</div><div class="testimonial-q-text">I joined after working for another bathroom company. The culture changed — instead of being about the customer and their experience, it was strictly about the money. I think of each customer as a friend, not as a dollar.</div></div>
+            <div class="testimonial-q"><div class="testimonial-q-label">How has the sales system changed how you connect?</div><div class="testimonial-q-text">I owned my own business for 34 years and developed many sales systems, but can honestly say this one for this industry is perfect. It gets and keeps customers' interest and engagement.</div></div>
+            <div class="testimonial-q"><div class="testimonial-q-label">One moment that really stuck with you?</div><div class="testimonial-q-text">Just recently I had one where the customer would not stop crying because of being happy and excited for what we are going to do for her and her husband. We really do help change lives.</div></div>
+            <div class="testimonial-q"><div class="testimonial-q-label">What would you say to someone thinking about joining?</div><div class="testimonial-q-text">It will be the best career choice they could make. Tons of training, great leadership, and a competitive nature to keep pushing yourself. Awesome experience.</div></div>
+          </div>
+        </div>
+
+        <div class="testimonial-card">
+          <div class="testimonial-header">
+            <div class="testimonial-avatar">CW</div>
+            <div><div class="testimonial-name">Catherine Walker</div><div class="testimonial-location">Plano, TX</div></div>
+            <div class="testimonial-quote-icon">"</div>
+          </div>
+          <button class="testimonial-toggle" onclick="toggleCard(this)">Read Catherine's Story <span class="arrow">▼</span></button>
+          <div class="testimonial-body">
+            <div class="testimonial-q"><div class="testimonial-q-label">What made you decide to join Five Star?</div><div class="testimonial-q-text">As I researched companies, Five Star rose to the top in terms of stellar reviews. I definitely wanted to be able to look customers in the eye and be confident about the results they would receive.</div></div>
+            <div class="testimonial-q"><div class="testimonial-q-label">How has the sales system changed how you connect?</div><div class="testimonial-q-text">Five Star has a clearly laid out sales system to enable customers to make the right decisions. People feel very educated throughout the process — but they also feel very much "a part of it." We earn our right to talk by listening first.</div></div>
+            <div class="testimonial-q"><div class="testimonial-q-label">One moment that really stuck with you?</div><div class="testimonial-q-text">I came home and told my husband I had been in homes of every culture imaginable and felt so connected to humanity. We are invited into their homes and private spaces and it is a true honor to spend time with our customers.</div></div>
+            <div class="testimonial-q"><div class="testimonial-q-label">What would you say to someone thinking about joining?</div><div class="testimonial-q-text">Do it. This is a proven business model. Just lean into the process. Check your ego and come crush it with us.</div></div>
+          </div>
+        </div>
+
+        <div class="testimonial-card">
+          <div class="testimonial-header">
+            <div class="testimonial-avatar">JD</div>
+            <div><div class="testimonial-name">John Dawes</div><div class="testimonial-location">Sioux Falls, SD</div></div>
+            <div class="testimonial-quote-icon">"</div>
+          </div>
+          <button class="testimonial-toggle" onclick="toggleCard(this)">Read John's Story <span class="arrow">▼</span></button>
+          <div class="testimonial-body">
+            <div class="testimonial-q"><div class="testimonial-q-label">What made you decide to join Five Star?</div><div class="testimonial-q-text">I quit and went to a competitor thinking they would keep me busy. Going through their training it was evident I didn't want to work there — mostly because of the way they treat customers. Coming back to Five Star I've been pleasantly surprised by the sales system and how Sam and Brian lead from the heart.</div></div>
+            <div class="testimonial-q"><div class="testimonial-q-label">How has the sales system changed how you connect?</div><div class="testimonial-q-text">It is a systematic flow that takes a customer from not knowing what to expect to wanting to purchase from you that day. Not being in this industry before has allowed me to become successful from day one because of the system.</div></div>
+            <div class="testimonial-q"><div class="testimonial-q-label">One moment that really stuck with you?</div><div class="testimonial-q-text">I ran into a couple after their install was completed. The look of complete satisfaction — it was very much like a first-time home buyer walking into their home for the first time. That made each presentation mean even more.</div></div>
+            <div class="testimonial-q"><div class="testimonial-q-label">What would you say to someone thinking about joining?</div><div class="testimonial-q-text">With the sales system and the support from everyone at Five Star, you have all the tools to become as successful as you want. I absolutely love this job.</div></div>
+          </div>
+        </div>
+
+        <div class="testimonial-card">
+          <div class="testimonial-header">
+            <div class="testimonial-avatar">JH</div>
+            <div><div class="testimonial-name">Jerry Helfer</div><div class="testimonial-location">Lapeer, MI</div></div>
+            <div class="testimonial-quote-icon">"</div>
+          </div>
+          <button class="testimonial-toggle" onclick="toggleCard(this)">Read Jerry's Story <span class="arrow">▼</span></button>
+          <div class="testimonial-body">
+            <div class="testimonial-q"><div class="testimonial-q-label">What made you decide to join Five Star?</div><div class="testimonial-q-text">I had lost many deals to Five Star with the other company I worked for. I thought they used inferior materials — but in reality they were the complete opposite.</div></div>
+            <div class="testimonial-q"><div class="testimonial-q-label">How has the sales system changed how you connect?</div><div class="testimonial-q-text">I no longer sell. I just share information and customers love it. The pressure to buy is always there but they don't view it, or feel it, the same way.</div></div>
+            <div class="testimonial-q"><div class="testimonial-q-label">One moment that really stuck with you?</div><div class="testimonial-q-text">When a customer had an install that was wrong, we went back and replaced the whole thing at no cost. My last company would have fought with the customer. At that moment I knew I was with a great company.</div></div>
+            <div class="testimonial-q"><div class="testimonial-q-label">What would you say to someone thinking about joining?</div><div class="testimonial-q-text">Follow the proven sales system and it'll change the way you've approached sales... and your bank account.</div></div>
+          </div>
+        </div>
+
+        <div class="testimonial-card">
+          <div class="testimonial-header">
+            <div class="testimonial-avatar" style="background: linear-gradient(135deg, #1A4A3C, var(--teal));">KS</div>
+            <div><div class="testimonial-name">Kayley Schiller</div><div class="testimonial-location">Lansing, MI · Your Training Coach</div></div>
+            <div class="testimonial-quote-icon">"</div>
+          </div>
+          <button class="testimonial-toggle" onclick="toggleCard(this)">Read Kayley's Story <span class="arrow">▼</span></button>
+          <div class="testimonial-body">
+            <div class="testimonial-q"><div class="testimonial-q-label">What made you decide to join Five Star?</div><div class="testimonial-q-text">I decided to join because I felt that this company cares about their employees and their customers, not just about money — which was a non-negotiable for me after my last experience.</div></div>
+            <div class="testimonial-q"><div class="testimonial-q-label">How has the sales system changed how you connect?</div><div class="testimonial-q-text">Our system has allowed me to focus on what matters to the customer and the sale comes much more naturally. I don't feel like I'm "pushing" every day anymore, which can be incredibly draining.</div></div>
+            <div class="testimonial-q"><div class="testimonial-q-label">One moment that really stuck with you?</div><div class="testimonial-q-text">The moments that stick with me most are when a customer hugs me goodbye or when they actually say "I trust you." It feels so good to know that they feel excited and comfortable with the decision I helped them make.</div></div>
+            <div class="testimonial-q"><div class="testimonial-q-label">What would you say to someone thinking about joining?</div><div class="testimonial-q-text">Buy in. This process is so different than what I've experienced before, but is everything I've ever wanted. The biggest thing for me was knowing that everything I tell my customers is true, and the company will follow through. You can't build that kind of trust unless you have the support.</div></div>
+          </div>
+        </div>
+
+      </div>
+    </div>
+
+    <!-- TESTIMONIALS EXERCISE -->
+    <div class="block">
+      <div class="exercise-block">
+        <div class="exercise-header blue">
+          <div class="exercise-header-icon">✏️</div>
+          <div>
+            <div class="exercise-header-text">Team Testimonials — Reflection</div>
+            <div class="exercise-header-sub">Read all six testimonials before answering.</div>
+          </div>
+        </div>
+        <div class="exercise-body">
+          <div class="question-block">
+            <div class="question-label"><span class="q-num">1</span>In your own words: What does it mean to treat a customer as the hero of their own renovation?</div>
+            <textarea class="question-textarea" id="q1" placeholder="Go beyond what you read. What does this mean to you personally?" oninput="handleInput(this,'q1')" rows="4"></textarea>
+            <div class="char-count" id="q1-count">0 characters</div>
+          </div>
+          <div class="question-block">
+            <div class="question-label"><span class="q-num">2</span>What surprised you about the way our reps describe their work here?</div>
+            <textarea class="question-textarea" id="q2" placeholder="What was different from what you expected?" oninput="handleInput(this,'q2')" rows="4"></textarea>
+            <div class="char-count" id="q2-count">0 characters</div>
+          </div>
+          <div class="question-block">
+            <div class="question-label"><span class="q-num">3</span>What kind of support or culture are you hoping to find on your team?</div>
+            <textarea class="question-textarea" id="q3" placeholder="Be honest about what you're looking for..." oninput="handleInput(this,'q3')" rows="4"></textarea>
+            <div class="char-count" id="q3-count">0 characters</div>
+          </div>
+          <div class="question-block">
+            <div class="question-label"><span class="q-num">4</span>What kind of rep do you want to be remembered as?</div>
+            <textarea class="question-textarea" id="q4" placeholder="Five years from now — what do customers and teammates say about you?" oninput="handleInput(this,'q4')" rows="4"></textarea>
+            <div class="char-count" id="q4-count">0 characters</div>
+          </div>
+          <div style="display:flex;align-items:center;justify-content:space-between;padding-top:8px;border-top:1px solid var(--border)">
+            <div class="save-indicator" id="si1">✓ Answers saved</div>
+            <div style="font-size:12px;color:var(--text-light)">Your answers save as you type</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="section-divider block">
+      <div class="section-divider-line"></div>
+      <div class="section-divider-label">Next Section</div>
+      <div class="section-divider-line"></div>
+    </div>
+
+    <!-- OUR CUSTOMERS -->
+    <div class="block">
+      <div class="section-tag">👥 Know Your Customer</div>
+      <div class="section-title">Our Customers</div>
+      <div class="section-intro">Before you ever look at a bathroom, you need to understand who called you and why. This section changes how you walk into every appointment.</div>
+    </div>
+
+    <div class="block">
+      <div class="video-wrap" id="video-customers">
+        <div class="video-thumb" onclick="playVideo('video-customers','https://drive.google.com/file/d/1u65Jdvgcdrr2WJCVzVqn6n4pGfqLPsyY/preview')">
+          <div class="video-thumb-inner">
+            <div class="play-circle"><div class="play-triangle"></div></div>
+            <div class="thumb-title">Our Customers</div>
+            <div class="thumb-meta">Understand who we serve and what matters most to them</div>
+          </div>
+        </div>
+        <iframe id="iframe-video-customers" src="" allow="autoplay" allowfullscreen></iframe>
+      </div>
+      <div class="video-label">▶ Our Customers — Who They Are and What Drives Them</div>
+    </div>
+
+    <div class="block">
+      <div class="callout">Every person who calls Five Star has a reason that goes deeper than a leaky shower. Watch the full video before answering the questions below.</div>
+    </div>
+
+    <div class="block">
+      <div class="exercise-block">
+        <div class="exercise-header teal">
+          <div class="exercise-header-icon">✏️</div>
+          <div>
+            <div class="exercise-header-text">Our Customers — Reflection</div>
+            <div class="exercise-header-sub">4 questions. These will matter in your first appointment.</div>
+          </div>
+        </div>
+        <div class="exercise-body">
+          <div class="question-block">
+            <div class="question-label"><span class="q-num teal">5</span>What emotions do our customers likely bring into these appointments?</div>
+            <textarea class="question-textarea" id="q5" placeholder="Think beyond 'they want a new bathroom.' What are they feeling when they open the door?" oninput="handleInput(this,'q5')" rows="4"></textarea>
+            <div class="char-count" id="q5-count">0 characters</div>
+          </div>
+          <div class="question-block">
+            <div class="question-label"><span class="q-num teal">6</span>What drives our customers to call us?</div>
+            <textarea class="question-textarea" id="q6" placeholder="What is the real reason — not just the surface one — that they picked up the phone?" oninput="handleInput(this,'q6')" rows="4"></textarea>
+            <div class="char-count" id="q6-count">0 characters</div>
+          </div>
+          <div class="question-block">
+            <div class="question-label"><span class="q-num teal">7</span>What might your customer have discovered about your company and their project before you even arrive?</div>
+            <textarea class="question-textarea" id="q7" placeholder="What do people do before a sales appointment? What do they already know, fear, or expect?" oninput="handleInput(this,'q7')" rows="4"></textarea>
+            <div class="char-count" id="q7-count">0 characters</div>
+          </div>
+          <div class="question-block">
+            <div class="question-label"><span class="q-num teal">8</span>Why is it important to know the customer's motivations, desires, and fears before even looking at their bathroom?</div>
+            <textarea class="question-textarea" id="q8" placeholder="What changes about how you show up when you understand the person before you assess the problem?" oninput="handleInput(this,'q8')" rows="4"></textarea>
+            <div class="char-count" id="q8-count">0 characters</div>
+          </div>
+          <div style="display:flex;align-items:center;justify-content:space-between;padding-top:8px;border-top:1px solid var(--border)">
+            <div class="save-indicator" id="si2">✓ Answers saved</div>
+            <div style="font-size:12px;color:var(--text-light)">Your answers save as you type</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="nav-footer">
+      <button class="btn-back" onclick="prevPage()">← Previous</button>
+      <span class="page-counter">Page 4 of 8</span>
+      <button class="btn-next" id="nextBtn" onclick="nextPage()" disabled>Next Page →</button>
+    </div>
+    <div class="progress-note" id="progressNote">Answer all 8 questions to continue.</div>
+
+  </main>
+</div>
+
+<script>
+  const answers = {q1:'',q2:'',q3:'',q4:'',q5:'',q6:'',q7:'',q8:''};
+  let saveTimer = null;
+
+  function toggleCard(btn) {
+    const body = btn.nextElementSibling;
+    const isOpen = body.classList.contains('open');
+    body.classList.toggle('open');
+    btn.querySelector('.arrow').textContent = isOpen ? '▼' : '▲';
+  }
+
+  function playVideo(wrapperId, src) {
+    const wrapper = document.getElementById(wrapperId);
+    wrapper.querySelector('.video-thumb').classList.add('hidden');
+    const iframe = wrapper.querySelector('iframe');
+    iframe.src = src;
+    iframe.classList.add('active');
+  }
+
+  function handleInput(el, key) {
+    answers[key] = el.value.trim();
+    document.getElementById(key+'-count').textContent = el.value.length + ' characters';
+    el.classList.toggle('answered', el.value.trim().length > 10);
+    clearTimeout(saveTimer);
+    saveTimer = setTimeout(saveAnswers, 800);
+    checkCompletion();
+  }
+
+  function saveAnswers() {
+    localStorage.setItem('day1_page4_answers', JSON.stringify(answers));
+    ['si1','si2'].forEach(id => {
+      const el = document.getElementById(id);
+      el.classList.add('show');
+      setTimeout(() => el.classList.remove('show'), 2000);
+    });
+  }
+
+  function checkCompletion() {
+    const incomplete = Object.keys(answers).filter(k => answers[k].length <= 10);
+    const done = incomplete.length === 0;
+    document.getElementById('nextBtn').disabled = !done;
+    document.getElementById('progressNote').textContent = done ? '' :
+      incomplete.length + ' question' + (incomplete.length > 1 ? 's' : '') + ' still need' + (incomplete.length === 1 ? 's' : '') + ' an answer.';
+  }
+
+  function prevPage() { window.location.href = 'FSBS_Day1_Page3.html'; }
+  function nextPage() { window.location.href = 'FSBS_Day1_Page5.html'; }
+
+  window.onload = function() {
+    const saved = localStorage.getItem('day1_page4_answers');
+    if (saved) {
+      const data = JSON.parse(saved);
+      Object.keys(data).forEach(key => {
+        if (data[key]) {
+          const el = document.getElementById(key);
+          if (el) {
+            el.value = data[key];
+            answers[key] = data[key];
+            document.getElementById(key+'-count').textContent = data[key].length + ' characters';
+            el.classList.toggle('answered', data[key].length > 10);
+          }
+        }
+      });
+    }
+    checkCompletion();
+  };
+</script>
+</body>
+</html>

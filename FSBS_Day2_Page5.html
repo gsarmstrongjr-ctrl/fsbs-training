@@ -1,0 +1,628 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Day 2 — Professionalism & Confidence | Five Star Bath Solutions Training</title>
+<link href="https://fonts.googleapis.com/css2?family=Barlow:wght@400;500;600;700;800&family=Barlow+Condensed:wght@600;700;800&family=Inter:wght@300;400;500&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --blue: #4790CC; --blue-dark: #1F4E79; --blue-deeper: #0D2E4D;
+    --teal: #6FB4A1; --white: #FFFFFF; --off-white: #F7F9FC;
+    --border: #E2E8F0; --text: #1A1A2E; --text-light: #64748B;
+    --success: #2D8C5E; --success-bg: #E8F5EF;
+    --amber: #7B5200; --amber-bg: #FFF8E1;
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body { font-family: 'Inter', sans-serif; background: var(--off-white); color: var(--text); min-height: 100vh; }
+
+  .topnav { background: var(--blue-deeper); height: 60px; display: flex; align-items: center; padding: 0 32px; justify-content: space-between; position: sticky; top: 0; z-index: 200; box-shadow: 0 2px 20px rgba(0,0,0,0.3); }
+  .nav-logo { display: flex; align-items: center; gap: 12px; }
+  .nav-logo-bubble { width: 32px; height: 32px; }
+  .nav-brand { display: flex; flex-direction: column; line-height: 1; }
+  .nav-brand-top { font-family: 'Barlow Condensed', sans-serif; font-size: 11px; font-weight: 600; letter-spacing: 2px; text-transform: uppercase; color: var(--blue); }
+  .nav-brand-bottom { font-family: 'Barlow Condensed', sans-serif; font-size: 18px; font-weight: 800; color: var(--white); }
+  .nav-center { display: flex; flex-direction: column; align-items: center; gap: 4px; }
+  .nav-progress-label { font-size: 10px; color: rgba(255,255,255,0.5); letter-spacing: 1px; text-transform: uppercase; }
+  .nav-progress-track { width: 200px; height: 4px; background: rgba(255,255,255,0.15); border-radius: 2px; overflow: hidden; }
+  .nav-progress-fill { height: 100%; background: var(--teal); border-radius: 2px; }
+  .nav-right { display: flex; align-items: center; gap: 16px; }
+  .nav-rep { text-align: right; }
+  .nav-rep-name { font-family: 'Barlow', sans-serif; font-size: 14px; font-weight: 600; color: var(--white); }
+  .nav-rep-cohort { font-size: 11px; color: rgba(255,255,255,0.4); }
+  .nav-avatar { width: 36px; height: 36px; border-radius: 50%; background: var(--blue); display: flex; align-items: center; justify-content: center; font-family: 'Barlow', sans-serif; font-weight: 700; font-size: 14px; color: white; }
+
+  .week-rail { background: var(--blue-dark); padding: 0 32px; display: flex; align-items: center; border-bottom: 1px solid rgba(255,255,255,0.08); }
+  .week-tab { padding: 14px 24px; font-family: 'Barlow', sans-serif; font-size: 13px; font-weight: 600; color: rgba(255,255,255,0.4); border-bottom: 3px solid transparent; display: flex; align-items: center; gap: 8px; }
+  .week-tab.active { color: var(--white); border-bottom-color: var(--blue); }
+  .week-tab.locked { opacity: 0.3; }
+  .week-badge { font-size: 9px; font-weight: 700; padding: 2px 6px; border-radius: 8px; background: var(--teal); color: white; }
+  .week-badge.locked-badge { background: rgba(255,255,255,0.15); }
+
+  .main { display: grid; grid-template-columns: 260px 1fr; min-height: calc(100vh - 100px); }
+  .sidebar { background: var(--white); border-right: 1px solid var(--border); padding: 24px 0; position: sticky; top: 100px; height: calc(100vh - 100px); overflow-y: auto; }
+  .sidebar-label { font-size: 10px; font-weight: 600; letter-spacing: 1.5px; text-transform: uppercase; color: var(--text-light); padding: 0 24px 12px; }
+  .day-item { padding: 14px 24px; display: flex; align-items: center; gap: 14px; transition: background 0.15s; border-left: 3px solid transparent; }
+  .day-item.active { background: #EBF4FF; border-left-color: var(--blue); }
+  .day-item.locked { opacity: 0.45; cursor: not-allowed; }
+  .day-item.done { opacity: 0.7; }
+  .day-dot { width: 36px; height: 36px; border-radius: 50%; background: var(--off-white); border: 2px solid var(--border); display: flex; align-items: center; justify-content: center; font-family: 'Barlow', sans-serif; font-size: 13px; font-weight: 700; color: var(--text-light); flex-shrink: 0; }
+  .day-item.active .day-dot { background: var(--blue); border-color: var(--blue); color: white; }
+  .day-item.done .day-dot { background: var(--success); border-color: var(--success); color: white; }
+  .day-info { flex: 1; min-width: 0; }
+  .day-title { font-family: 'Barlow', sans-serif; font-size: 14px; font-weight: 600; color: var(--text); }
+  .day-item.active .day-title { color: var(--blue-dark); }
+  .day-sub { font-size: 11px; color: var(--text-light); margin-top: 2px; }
+  .day-pages { display: flex; gap: 3px; margin-top: 6px; }
+  .day-page-pip { width: 6px; height: 6px; border-radius: 50%; background: var(--border); }
+  .day-page-pip.done { background: var(--success); }
+  .day-page-pip.current { background: var(--blue); }
+  .lock-icon { font-size: 12px; color: #CBD5E1; }
+
+  .content { padding: 40px 48px; max-width: 860px; }
+  .breadcrumb { display: flex; align-items: center; gap: 8px; font-size: 12px; color: var(--text-light); margin-bottom: 28px; font-weight: 500; }
+  .breadcrumb-sep { color: var(--border); }
+  .breadcrumb-current { color: var(--blue); }
+  .page-progress { display: flex; align-items: center; gap: 8px; margin-bottom: 32px; }
+  .page-pip { height: 4px; border-radius: 2px; background: var(--border); flex: 1; }
+  .page-pip.done { background: var(--success); }
+  .page-pip.current { background: var(--blue); }
+  .page-pip-label { font-size: 11px; color: var(--text-light); white-space: nowrap; }
+
+  .block { margin-bottom: 32px; animation: fadeUp 0.4s ease forwards; }
+  .section-tag { display: inline-flex; align-items: center; gap: 6px; background: #EBF4FF; color: var(--blue); font-size: 11px; font-weight: 700; letter-spacing: 1px; text-transform: uppercase; padding: 4px 12px; border-radius: 20px; margin-bottom: 10px; }
+  .section-title { font-family: 'Barlow Condensed', sans-serif; font-size: 36px; font-weight: 800; color: var(--blue-dark); line-height: 1.1; }
+  .section-intro { font-size: 15px; color: var(--text-light); line-height: 1.65; margin-top: 8px; max-width: 620px; }
+  .section-divider { border: none; border-top: 2px solid var(--border); margin: 40px 0; }
+
+  .video-wrap { border-radius: 12px; overflow: hidden; box-shadow: 0 8px 32px rgba(0,0,0,0.15); background: #000; position: relative; padding-top: 56.25%; }
+  .video-wrap iframe { position: absolute; top: 0; left: 0; width: 100%; height: 100%; border: none; opacity: 0; transition: opacity 0.4s ease; }
+  .video-wrap iframe.active { opacity: 1; }
+  .video-thumb { position: absolute; inset: 0; z-index: 2; cursor: pointer; display: flex; align-items: center; justify-content: center; background: linear-gradient(135deg, var(--blue-deeper) 0%, var(--blue-dark) 55%, #2E5F8A 100%); transition: opacity 0.35s ease; }
+  .video-thumb.hidden { opacity: 0; pointer-events: none; }
+  .video-thumb-inner { display: flex; flex-direction: column; align-items: center; gap: 18px; text-align: center; padding: 24px; }
+  .play-circle { width: 76px; height: 76px; border-radius: 50%; background: rgba(255,255,255,0.12); border: 2px solid rgba(255,255,255,0.3); display: flex; align-items: center; justify-content: center; transition: all 0.2s; }
+  .video-thumb:hover .play-circle { background: rgba(71,144,204,0.5); border-color: rgba(71,144,204,0.8); transform: scale(1.06); }
+  .play-triangle { width: 0; height: 0; border-top: 13px solid transparent; border-bottom: 13px solid transparent; border-left: 22px solid white; margin-left: 5px; }
+  .thumb-title { font-family: 'Barlow Condensed', sans-serif; font-size: 20px; font-weight: 700; color: white; line-height: 1.2; max-width: 400px; }
+  .thumb-meta { font-size: 12px; color: rgba(255,255,255,0.5); }
+  .video-label { font-family: 'Barlow', sans-serif; font-size: 13px; font-weight: 600; color: var(--text-light); margin-top: 10px; }
+
+  .field-notes { background: var(--white); border: 1px solid var(--border); border-radius: 12px; overflow: hidden; margin-bottom: 32px; }
+  .field-notes-header { padding: 14px 24px; background: linear-gradient(135deg, #0D3320, #1A5C3A); display: flex; align-items: center; gap: 12px; }
+  .field-notes-icon { font-size: 18px; }
+  .field-notes-title { font-family: 'Barlow', sans-serif; font-size: 15px; font-weight: 700; color: white; }
+  .field-notes-sub { font-size: 12px; color: rgba(255,255,255,0.6); margin-top: 1px; }
+  .field-notes-body { padding: 28px; }
+  .fn-section { margin-bottom: 24px; }
+  .fn-section:last-child { margin-bottom: 0; }
+  .fn-heading { font-family: 'Barlow', sans-serif; font-size: 13px; font-weight: 700; letter-spacing: 1px; text-transform: uppercase; color: var(--blue); margin-bottom: 10px; }
+  .fn-two-col { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+  .fn-col-good { background: var(--success-bg); border: 1px solid #A8D5BC; border-radius: 8px; padding: 16px; }
+  .fn-col-bad { background: #FEF2F2; border: 1px solid #FECACA; border-radius: 8px; padding: 16px; }
+  .fn-col-title { font-family: 'Barlow', sans-serif; font-size: 12px; font-weight: 700; text-transform: uppercase; letter-spacing: 1px; margin-bottom: 10px; }
+  .fn-col-good .fn-col-title { color: var(--success); }
+  .fn-col-bad .fn-col-title { color: #DC2626; }
+  .fn-col-list { list-style: none; display: flex; flex-direction: column; gap: 6px; }
+  .fn-col-list li { font-size: 13px; line-height: 1.5; display: flex; gap: 8px; }
+  .fn-col-good .fn-col-list li::before { content: '✓'; color: var(--success); font-weight: 700; }
+  .fn-col-bad .fn-col-list li::before { content: '✗'; color: #DC2626; font-weight: 700; }
+  .fn-list { list-style: none; display: flex; flex-direction: column; gap: 8px; }
+  .fn-list li { display: flex; align-items: flex-start; gap: 10px; font-size: 14px; color: var(--text); line-height: 1.5; }
+  .fn-list li::before { content: '→'; color: var(--blue); font-weight: 700; flex-shrink: 0; margin-top: 1px; }
+  .fn-callout { background: #EBF4FF; border-left: 4px solid var(--blue); border-radius: 0 8px 8px 0; padding: 14px 18px; font-size: 14px; color: var(--blue-dark); font-style: italic; line-height: 1.6; margin-top: 12px; font-weight: 500; }
+
+  .exercise-block { background: var(--white); border: 1px solid var(--border); border-radius: 12px; overflow: hidden; }
+  .exercise-header { padding: 16px 24px; display: flex; align-items: center; gap: 12px; background: linear-gradient(135deg, #1A3A5C, #2563A8); }
+  .exercise-header-icon { font-size: 20px; }
+  .exercise-header-text { font-family: 'Barlow', sans-serif; font-size: 15px; font-weight: 700; color: white; }
+  .exercise-header-sub { font-size: 12px; color: rgba(255,255,255,0.6); margin-top: 2px; }
+  .exercise-body { padding: 28px; display: flex; flex-direction: column; gap: 24px; }
+  .question-block { display: flex; flex-direction: column; gap: 8px; }
+  .question-label { font-family: 'Barlow', sans-serif; font-size: 15px; font-weight: 600; color: var(--text); line-height: 1.4; }
+  .q-num { display: inline-flex; align-items: center; justify-content: center; width: 22px; height: 22px; border-radius: 50%; background: var(--blue); color: white; font-size: 11px; font-weight: 700; margin-right: 8px; vertical-align: middle; }
+  .question-textarea { width: 100%; min-height: 90px; padding: 14px 16px; border: 1px solid var(--border); border-radius: 8px; font-family: 'Inter', sans-serif; font-size: 14px; color: var(--text); line-height: 1.6; resize: vertical; transition: border-color 0.2s; background: var(--off-white); }
+  .question-textarea:focus { outline: none; border-color: var(--blue); background: white; box-shadow: 0 0 0 3px rgba(71,144,204,0.1); }
+  .question-textarea.answered { border-color: var(--success); background: white; }
+  .char-count { font-size: 11px; color: var(--text-light); text-align: right; }
+
+  /* RATING */
+  .rating-block { display: flex; flex-direction: column; gap: 12px; }
+  .rating-label { font-family: 'Barlow', sans-serif; font-size: 15px; font-weight: 600; color: var(--text); line-height: 1.4; }
+  .rating-scale { display: flex; gap: 10px; align-items: center; }
+  .rating-ends { font-size: 12px; color: var(--text-light); white-space: nowrap; }
+  .rating-options { display: flex; gap: 8px; flex: 1; justify-content: center; }
+  .rating-btn { width: 48px; height: 48px; border-radius: 50%; border: 2px solid var(--border); background: var(--off-white); font-family: 'Barlow', sans-serif; font-size: 16px; font-weight: 700; color: var(--text-light); cursor: pointer; transition: all 0.2s; }
+  .rating-btn:hover { border-color: var(--blue); color: var(--blue); background: #EBF4FF; }
+  .rating-btn.selected { background: var(--blue); border-color: var(--blue); color: white; transform: scale(1.1); }
+
+  .save-indicator { display: flex; align-items: center; gap: 6px; font-size: 12px; color: var(--success); font-weight: 500; opacity: 0; transition: opacity 0.3s; }
+  .save-indicator.show { opacity: 1; }
+
+  /* SUBMIT */
+  .submit-block { background: linear-gradient(135deg, var(--blue-deeper), #1A3A5C); border-radius: 14px; padding: 36px 40px; text-align: center; position: relative; overflow: hidden; }
+  .submit-block::before { content: ''; position: absolute; top: -40px; right: -40px; width: 180px; height: 180px; border-radius: 50%; background: rgba(71,144,204,0.1); }
+  .submit-eyebrow { font-family: 'Barlow Condensed', sans-serif; font-size: 11px; font-weight: 700; letter-spacing: 2px; text-transform: uppercase; color: var(--teal); margin-bottom: 12px; }
+  .submit-heading { font-family: 'Barlow Condensed', sans-serif; font-size: 28px; font-weight: 800; color: white; margin-bottom: 10px; }
+  .submit-desc { font-size: 14px; color: rgba(255,255,255,0.7); line-height: 1.6; margin-bottom: 28px; max-width: 480px; margin-left: auto; margin-right: auto; }
+  .submit-btn { background: var(--teal); color: white; border: none; padding: 16px 48px; border-radius: 8px; font-family: 'Barlow', sans-serif; font-size: 16px; font-weight: 700; cursor: pointer; transition: all 0.2s; letter-spacing: 0.3px; box-shadow: 0 4px 20px rgba(111,180,161,0.4); position: relative; z-index: 1; }
+  .submit-btn:hover { background: #5A9A87; transform: translateY(-2px); }
+  .submit-btn:disabled { opacity: 0.4; cursor: not-allowed; transform: none; }
+  .submit-note { font-size: 12px; color: rgba(255,255,255,0.4); margin-top: 12px; }
+  .submit-success { background: linear-gradient(135deg, #1A5C3A, #2D8C5E); border-radius: 14px; padding: 40px; text-align: center; display: none; }
+  .submit-success.show { display: block; }
+  .success-icon { font-size: 52px; margin-bottom: 16px; }
+  .success-heading { font-family: 'Barlow Condensed', sans-serif; font-size: 32px; font-weight: 800; color: white; margin-bottom: 10px; }
+  .success-desc { font-size: 15px; color: rgba(255,255,255,0.8); line-height: 1.6; }
+  .contact-block { background: var(--white); border: 1px solid var(--border); border-radius: 12px; padding: 24px 28px; margin-top: 20px; }
+  .contact-heading { font-family: 'Barlow', sans-serif; font-size: 14px; font-weight: 700; color: var(--text); margin-bottom: 12px; }
+  .contact-emails { display: flex; gap: 12px; flex-wrap: wrap; }
+  .contact-email { display: inline-flex; align-items: center; gap: 8px; background: #EBF4FF; color: var(--blue-dark); font-size: 13px; font-weight: 600; padding: 8px 14px; border-radius: 6px; text-decoration: none; }
+  .contact-note { font-size: 12px; color: var(--text-light); margin-top: 10px; line-height: 1.6; }
+
+  .nav-footer { display: flex; align-items: center; justify-content: space-between; margin-top: 48px; padding-top: 28px; border-top: 1px solid var(--border); }
+  .btn-back { display: flex; align-items: center; gap: 8px; padding: 12px 24px; border: 1px solid var(--border); border-radius: 8px; background: var(--white); color: var(--text-light); font-family: 'Barlow', sans-serif; font-size: 14px; font-weight: 600; cursor: pointer; transition: all 0.2s; }
+  .btn-back:hover { border-color: var(--blue); color: var(--blue); }
+  .btn-next { display: flex; align-items: center; gap: 10px; padding: 14px 32px; background: var(--success); color: white; border: none; border-radius: 8px; font-family: 'Barlow', sans-serif; font-size: 15px; font-weight: 700; cursor: pointer; transition: all 0.2s; box-shadow: 0 4px 16px rgba(45,140,94,0.3); }
+  .btn-next:hover { background: #236B47; transform: translateY(-1px); }
+  .btn-next:disabled { opacity: 0.4; cursor: not-allowed; transform: none; background: var(--success); }
+  .page-counter { font-size: 13px; color: var(--text-light); }
+  .progress-note { font-size: 12px; color: var(--text-light); text-align: center; margin-top: 10px; min-height: 18px; }
+
+  @keyframes fadeUp { from { opacity: 0; transform: translateY(16px); } to { opacity: 1; transform: translateY(0); } }
+  .sidebar::-webkit-scrollbar { width: 4px; }
+  .sidebar::-webkit-scrollbar-thumb { background: var(--border); border-radius: 2px; }
+</style>
+</head>
+<body>
+
+<nav class="topnav">
+  <div class="nav-logo">
+    <div class="nav-logo-bubble">
+      <svg viewBox="0 0 100 130" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <circle cx="38" cy="15" r="12" stroke="#4790CC" stroke-width="8" fill="none"/>
+        <circle cx="65" cy="55" r="22" stroke="#4790CC" stroke-width="8" fill="none"/>
+        <circle cx="38" cy="95" r="32" stroke="#4790CC" stroke-width="8" fill="none"/>
+      </svg>
+    </div>
+    <div class="nav-brand">
+      <span class="nav-brand-top">Five Star Bath Solutions</span>
+      <span class="nav-brand-bottom">Sales Training</span>
+    </div>
+  </div>
+  <div class="nav-center">
+    <div class="nav-progress-label">Week 1 Progress — Day 2 of 5</div>
+    <div class="nav-progress-track"><div class="nav-progress-fill" style="width: 90%"></div></div>
+  </div>
+  <div class="nav-right">
+    <div class="nav-rep">
+      <div class="nav-rep-name" id="repName">Sales Rep</div>
+      <div class="nav-rep-cohort" id="repCohort">Week 1</div>
+    </div>
+    <div class="nav-avatar" id="navAvatar">SR</div>
+  </div>
+</nav>
+
+<div class="week-rail">
+  <div class="week-tab active">Week 1 <span class="week-badge">In Progress</span></div>
+  <div class="week-tab locked">Week 2 <span class="week-badge locked-badge">Locked</span></div>
+</div>
+
+<div class="main">
+  <aside class="sidebar">
+    <div class="sidebar-label">Week 1 — Days</div>
+    <div class="day-item done"><div class="day-dot">✓</div><div class="day-info"><div class="day-title">Day 1 — Who We Are</div><div class="day-sub">Completed</div></div></div>
+    <div class="day-item active">
+      <div class="day-dot">2</div>
+      <div class="day-info">
+        <div class="day-title">Day 2 — What We Sell</div>
+        <div class="day-sub">Page 5 of 5 — Final</div>
+        <div class="day-pages">
+          <div class="day-page-pip done"></div><div class="day-page-pip done"></div>
+          <div class="day-page-pip done"></div><div class="day-page-pip done"></div>
+          <div class="day-page-pip current"></div>
+        </div>
+      </div>
+    </div>
+    <div class="day-item locked"><div class="day-dot">3</div><div class="day-info"><div class="day-title">Day 3 — The Appointment</div><div class="day-sub">Unlocks after Day 2</div></div><span class="lock-icon">🔒</span></div>
+    <div class="day-item locked"><div class="day-dot">4</div><div class="day-info"><div class="day-title">Day 4 — Tools & Tech</div><div class="day-sub">Unlocks after Day 3</div></div><span class="lock-icon">🔒</span></div>
+    <div class="day-item locked"><div class="day-dot">5</div><div class="day-info"><div class="day-title">Day 5 — The Presentation</div><div class="day-sub">Unlocks after Day 4</div></div><span class="lock-icon">🔒</span></div>
+  </aside>
+
+  <main class="content">
+    <div class="breadcrumb">
+      <span>Week 1</span><span class="breadcrumb-sep">›</span>
+      <span>Day 2 — What We Sell</span><span class="breadcrumb-sep">›</span>
+      <span class="breadcrumb-current">Page 5 — Professionalism, Confidence & Submit</span>
+    </div>
+
+    <div class="page-progress">
+      <div class="page-pip done"></div><div class="page-pip done"></div>
+      <div class="page-pip done"></div><div class="page-pip done"></div>
+      <div class="page-pip current"></div>
+      <span class="page-pip-label">Page 5 of 5</span>
+    </div>
+
+    <!-- PROFESSIONALISM -->
+    <div class="block">
+      <div class="section-tag">👔 How You Show Up</div>
+      <div class="section-title">Professionalism in the Field</div>
+      <div class="section-intro">Tone, attire, punctuality, and how you carry yourself — even on tough days. Customers form opinions in the first 7 seconds. Your professionalism is our competitive advantage.</div>
+    </div>
+
+    <div class="block">
+      <div class="video-wrap" id="video-prof">
+        <div class="video-thumb" onclick="playVideo('video-prof','https://drive.google.com/file/d/1JZnM8HMg1IYo-9NqO-OlK5h67aBjrI8x/preview')">
+          <div class="video-thumb-inner">
+            <div class="play-circle"><div class="play-triangle"></div></div>
+            <div class="thumb-title">Professionalism in the Field</div>
+            <div class="thumb-meta">Five Star Standards · FSBS</div>
+          </div>
+        </div>
+        <iframe id="iframe-video-prof" src="" allow="autoplay" allowfullscreen></iframe>
+      </div>
+      <div class="video-label">▶ Professionalism — The Five Star Standard</div>
+    </div>
+
+    <div class="block">
+      <div class="field-notes">
+        <div class="field-notes-header">
+          <div class="field-notes-icon">📋</div>
+          <div>
+            <div class="field-notes-title">Field Notes — Professionalism Standards</div>
+            <div class="field-notes-sub">What it looks like to represent the brand with excellence</div>
+          </div>
+        </div>
+        <div class="field-notes-body">
+          <div class="fn-section">
+            <div class="fn-heading">The Five Star Standard</div>
+            <div class="fn-two-col">
+              <div class="fn-col-good">
+                <div class="fn-col-title">✓ Five Star Reps Do</div>
+                <ul class="fn-col-list">
+                  <li>Arrive fully prepared and early</li>
+                  <li>Wear clean, pressed Five Star logo shirt</li>
+                  <li>iPad charged to 100% before every sit</li>
+                  <li>Organized, clutter-free vehicle</li>
+                  <li>Focus solely on customer needs</li>
+                  <li>Use reliable, professional tools</li>
+                </ul>
+              </div>
+              <div class="fn-col-bad">
+                <div class="fn-col-title">✗ Trust Killers</div>
+                <ul class="fn-col-list">
+                  <li>Dead or uncharged devices</li>
+                  <li>Wrinkled or stained clothing</li>
+                  <li>Disorganized or missing materials</li>
+                  <li>Bringing personal problems to appointments</li>
+                  <li>Messy or poorly maintained vehicle</li>
+                  <li>Rushing or appearing scattered</li>
+                </ul>
+              </div>
+            </div>
+          </div>
+          <div class="fn-callout">
+            "If they can't maintain their own vehicle, can they handle my bathroom project?" — How customers think. Your car is a rolling billboard.
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- PROFESSIONALISM QUESTIONS -->
+    <div class="block">
+      <div class="exercise-block">
+        <div class="exercise-header">
+          <div class="exercise-header-icon">✏️</div>
+          <div>
+            <div class="exercise-header-text">Professionalism — Reflection</div>
+            <div class="exercise-header-sub">3 questions · Answers save automatically</div>
+          </div>
+        </div>
+        <div class="exercise-body">
+          <div class="question-block">
+            <div class="question-label"><span class="q-num">1</span>What does it mean to be professional — even in a casual environment?</div>
+            <textarea class="question-textarea" id="q1" placeholder="Professionalism isn't just a formal setting — what does it look like in a customer's home?" oninput="handleInput(this,'q1')" rows="4"></textarea>
+            <div class="char-count" id="q1-count">0 characters</div>
+          </div>
+          <div class="question-block">
+            <div class="question-label"><span class="q-num">2</span>How does being prepared, clean, and respectful set you apart?</div>
+            <textarea class="question-textarea" id="q2" placeholder="What does preparation communicate before you say a single word?" oninput="handleInput(this,'q2')" rows="4"></textarea>
+            <div class="char-count" id="q2-count">0 characters</div>
+          </div>
+          <div class="question-block">
+            <div class="question-label"><span class="q-num">3</span>What does "representing the brand well" look like in action?</div>
+            <textarea class="question-textarea" id="q3" placeholder="Give a specific example — what does it look like, feel like, and sound like?" oninput="handleInput(this,'q3')" rows="4"></textarea>
+            <div class="char-count" id="q3-count">0 characters</div>
+          </div>
+          <div style="display:flex;align-items:center;justify-content:space-between;padding-top:8px;border-top:1px solid var(--border)">
+            <div class="save-indicator" id="saveIndicator1">✓ Answers saved</div>
+            <div style="font-size:12px;color:var(--text-light)">Your answers save as you type</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <hr class="section-divider">
+
+    <!-- QUIET CONFIDENCE -->
+    <div class="block">
+      <div class="section-tag">🧭 Inner Strength</div>
+      <div class="section-title">Selling with Quiet Confidence</div>
+      <div class="section-intro">Confidence isn't volume. It's presence. Real confidence comes from knowing what you offer is genuinely superior — not from performance, bravado, or pressure. When you're calm, the customer relaxes. That's when trust is built.</div>
+    </div>
+
+    <div class="block">
+      <div class="video-wrap" id="video-conf">
+        <div class="video-thumb" onclick="playVideo('video-conf','https://drive.google.com/file/d/1CdgTvBl4EwsiGcLPse-cOguIgir2JW-I/preview')">
+          <div class="video-thumb-inner">
+            <div class="play-circle"><div class="play-triangle"></div></div>
+            <div class="thumb-title">Selling with Quiet Confidence</div>
+            <div class="thumb-meta">Confidence isn't volume. It's presence. · FSBS</div>
+          </div>
+        </div>
+        <iframe id="iframe-video-conf" src="" allow="autoplay" allowfullscreen></iframe>
+      </div>
+      <div class="video-label">▶ Selling with Quiet Confidence — Trust Over Tactics</div>
+    </div>
+
+    <div class="block">
+      <div class="field-notes">
+        <div class="field-notes-header">
+          <div class="field-notes-icon">📋</div>
+          <div>
+            <div class="field-notes-title">Field Notes — The Four Pillars of Five Star Confidence</div>
+            <div class="field-notes-sub">Internal confidence vs. performed confidence</div>
+          </div>
+        </div>
+        <div class="field-notes-body">
+          <div class="fn-section">
+            <div class="fn-heading">The Four Pillars</div>
+            <ul class="fn-list">
+              <li><strong>Trust the Product</strong> — Smart Choice is genuinely superior. Engineered for performance. Backed by a comprehensive warranty. Proven across thousands of installations.</li>
+              <li><strong>Trust the Process</strong> — The S.T.O.R.Y. system works when followed. Customer-centered approach builds trust. Education creates confident decisions. No pressure needed.</li>
+              <li><strong>Trust the Company</strong> — Industry leader. Standing behind work and warranties. Continuous improvement. Values-driven.</li>
+              <li><strong>Trust Yourself</strong> — You've been trained in proven systems. You represent something excellent. Your preparation shows professionalism. You're helping customers make good decisions.</li>
+            </ul>
+          </div>
+          <div class="fn-section">
+            <div class="fn-heading">Internal vs. Performed Confidence</div>
+            <div class="fn-two-col">
+              <div class="fn-col-good">
+                <div class="fn-col-title">✓ Internal (What We Want)</div>
+                <ul class="fn-col-list">
+                  <li>Calm assurance</li>
+                  <li>Genuine belief in product and process</li>
+                  <li>Natural trust-building</li>
+                  <li>Authentic communication</li>
+                  <li>Comfortable with silence</li>
+                </ul>
+              </div>
+              <div class="fn-col-bad">
+                <div class="fn-col-title">✗ Performed (What to Avoid)</div>
+                <ul class="fn-col-list">
+                  <li>Fake energy or forced enthusiasm</li>
+                  <li>Aggressive closing tactics</li>
+                  <li>Manufactured urgency</li>
+                  <li>Defensive about pricing</li>
+                  <li>Avoiding difficult questions</li>
+                </ul>
+              </div>
+            </div>
+          </div>
+          <div class="fn-callout">
+            "Con + Fidere = with trust. Real confidence is integrity that shines through when you know what you offer is genuinely superior."
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- CONFIDENCE + FINAL COMMITMENT QUESTIONS -->
+    <div class="block">
+      <div class="exercise-block">
+        <div class="exercise-header">
+          <div class="exercise-header-icon">✏️</div>
+          <div>
+            <div class="exercise-header-text">Confidence & Personal Mission — Final Reflection</div>
+            <div class="exercise-header-sub">4 questions including your personal commitment · Answers save automatically</div>
+          </div>
+        </div>
+        <div class="exercise-body">
+          <div class="question-block">
+            <div class="question-label"><span class="q-num">4</span>Where does real confidence come from — and how do customers recognize it?</div>
+            <textarea class="question-textarea" id="q4" placeholder="What's the source — and what does it look like from the customer's side of the table?" oninput="handleInput(this,'q4')" rows="4"></textarea>
+            <div class="char-count" id="q4-count">0 characters</div>
+          </div>
+          <div class="question-block">
+            <div class="question-label"><span class="q-num">5</span>What's the difference between confidence and pressure?</div>
+            <textarea class="question-textarea" id="q5" placeholder="How does each one feel to the customer — and what does each one produce?" oninput="handleInput(this,'q5')" rows="4"></textarea>
+            <div class="char-count" id="q5-count">0 characters</div>
+          </div>
+          <div class="question-block">
+            <div class="question-label"><span class="q-num">6</span>How does a lack of professionalism affect the customer's perception?</div>
+            <textarea class="question-textarea" id="q6" placeholder="What does unprofessionalism signal — even before you say anything about the product?" oninput="handleInput(this,'q6')" rows="4"></textarea>
+            <div class="char-count" id="q6-count">0 characters</div>
+          </div>
+          <div class="question-block" style="background: linear-gradient(135deg, #EBF4FF, #F0FAF7); border-radius: 10px; padding: 20px; border: 1px solid #C3DFF6;">
+            <div class="question-label" style="color: var(--blue-dark); font-size: 16px;">🎯 <span class="q-num" style="background: var(--teal);">7</span>The kind of rep I want to become is...</div>
+            <textarea class="question-textarea" id="q7" placeholder="Write your personal mission statement. This is yours — be honest, be specific, be bold." oninput="handleInput(this,'q7')" rows="5" style="border-color: var(--teal);"></textarea>
+            <div class="char-count" id="q7-count">0 characters</div>
+          </div>
+
+          <!-- RATING -->
+          <div class="rating-block">
+            <div class="rating-label"><span class="q-num">8</span>How would you rate the clarity and effectiveness of today's training presentation materials?</div>
+            <div class="rating-scale">
+              <span class="rating-ends">Not clear</span>
+              <div class="rating-options">
+                <button class="rating-btn" onclick="selectRating(1)">1</button>
+                <button class="rating-btn" onclick="selectRating(2)">2</button>
+                <button class="rating-btn" onclick="selectRating(3)">3</button>
+                <button class="rating-btn" onclick="selectRating(4)">4</button>
+                <button class="rating-btn" onclick="selectRating(5)">5</button>
+              </div>
+              <span class="rating-ends">Very clear</span>
+            </div>
+          </div>
+
+          <div style="display:flex;align-items:center;justify-content:space-between;padding-top:8px;border-top:1px solid var(--border)">
+            <div class="save-indicator" id="saveIndicator2">✓ Answers saved</div>
+            <div style="font-size:12px;color:var(--text-light)">Your answers save as you type</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- SUBMIT -->
+    <div class="block" id="submitSection">
+      <div class="submit-block" id="submitForm">
+        <div class="submit-eyebrow">🎯 Day 2 Complete</div>
+        <div class="submit-heading">Submit Your Day 2 Workbook</div>
+        <div class="submit-desc">You've completed all of Day 2's content and reflection questions. Submit your workbook to wrap up. Your responses will be sent to your coaches automatically.</div>
+        <button class="submit-btn" id="submitBtn" onclick="submitWorkbook()" disabled>Submit Day 2 Workbook ✓</button>
+        <div class="submit-note">Your answers are automatically emailed to your coaching team.</div>
+      </div>
+      <div class="submit-success" id="submitSuccess">
+        <div class="success-icon">🎉</div>
+        <div class="success-heading">Day 2 Complete!</div>
+        <div class="success-desc">Outstanding work. You now know the product, the system, and the standard. Day 3 will unlock tomorrow morning — you'll receive an email with your Day 3 content link.<br><br>See you tomorrow.</div>
+      </div>
+    </div>
+
+    <!-- CONTACT BLOCK -->
+    <div class="block">
+      <div class="contact-block">
+        <div class="contact-heading">📬 Questions or Concerns?</div>
+        <div class="contact-emails">
+          <a href="mailto:kayley.schiller@fivestarbathsolutions.com" class="contact-email">✉ kayley.schiller@fivestarbathsolutions.com</a>
+          <a href="mailto:Brianh@fivestarbathsolutions.com" class="contact-email">✉ brianh@fivestarbathsolutions.com</a>
+        </div>
+        <div class="contact-note">Include both trainers in all email correspondence. If you wrote answers longhand, take photos and attach them to your email — that works perfectly.</div>
+      </div>
+    </div>
+
+    <div class="nav-footer">
+      <button class="btn-back" onclick="prevPage()">← Post-Appointment</button>
+      <span class="page-counter">Page 5 of 5 — Final Page</span>
+      <button class="btn-next" id="nextBtn" onclick="goToDay3()" disabled>Day 3 Unlocks Tomorrow →</button>
+    </div>
+    <div class="progress-note" id="progressNote">Complete all questions and submit your workbook to finish Day 2.</div>
+
+  </main>
+</div>
+
+<script>
+  const answers = { q1:'',q2:'',q3:'',q4:'',q5:'',q6:'',q7:'',rating:'' };
+  let saveTimer = null;
+  let submitted = false;
+
+  function playVideo(wrapperId, src) {
+    const wrapper = document.getElementById(wrapperId);
+    wrapper.querySelector('.video-thumb').classList.add('hidden');
+    const iframe = wrapper.querySelector('iframe');
+    iframe.src = src;
+    iframe.classList.add('active');
+  }
+
+  function handleInput(el, key) {
+    answers[key] = el.value.trim();
+    document.getElementById(key+'-count').textContent = el.value.length + ' characters';
+    el.classList.toggle('answered', el.value.trim().length > 10);
+    clearTimeout(saveTimer);
+    saveTimer = setTimeout(saveAnswers, 800);
+    checkCompletion();
+  }
+
+  function selectRating(val) {
+    document.querySelectorAll('.rating-btn').forEach((btn, i) => {
+      btn.classList.toggle('selected', i + 1 === val);
+    });
+    answers.rating = String(val);
+    saveAnswers();
+    checkCompletion();
+  }
+
+  function saveAnswers() {
+    localStorage.setItem('day2_page5_answers', JSON.stringify(answers));
+    ['saveIndicator1','saveIndicator2'].forEach(id => {
+      const el = document.getElementById(id);
+      if (el) { el.classList.add('show'); setTimeout(() => el.classList.remove('show'), 2000); }
+    });
+  }
+
+  function checkCompletion() {
+    const textDone = ['q1','q2','q3','q4','q5','q6','q7'].every(k => answers[k].length > 10);
+    const ratingDone = answers.rating !== '';
+    const allDone = textDone && ratingDone;
+    document.getElementById('submitBtn').disabled = !allDone;
+    if (allDone && !submitted) {
+      document.getElementById('progressNote').textContent = 'All questions answered — ready to submit!';
+    }
+  }
+
+  function submitWorkbook() {
+    const allAnswers = {
+      day: 2,
+      ...JSON.parse(localStorage.getItem('day2_page1_answers') || '{}'),
+      ...JSON.parse(localStorage.getItem('day2_page2_answers') || '{}'),
+      ...JSON.parse(localStorage.getItem('day2_page3_answers') || '{}'),
+      ...JSON.parse(localStorage.getItem('day2_page4_answers') || '{}'),
+      ...answers
+    };
+
+    document.getElementById('submitBtn').disabled = true;
+    document.getElementById('submitBtn').textContent = 'Submitting...';
+
+    setTimeout(() => {
+      submitted = true;
+      document.getElementById('submitForm').style.display = 'none';
+      document.getElementById('submitSuccess').classList.add('show');
+      document.getElementById('nextBtn').disabled = false;
+      document.getElementById('progressNote').textContent = '';
+      localStorage.setItem('day2_complete', 'true');
+    }, 1200);
+  }
+
+  function prevPage() { window.location.href = 'FSBS_Day2_Page4.html'; }
+  function goToDay3() { alert('Day 2 complete! Day 3 will unlock tomorrow morning.'); }
+
+  window.onload = function() {
+    const repInfo = JSON.parse(localStorage.getItem('fsbs_rep_info') || '{}');
+    if (repInfo.name) {
+      document.getElementById('repName').textContent = repInfo.name;
+      document.getElementById('navAvatar').textContent = repInfo.name.split(' ').map(n=>n[0]).join('').toUpperCase().slice(0,2);
+    }
+    if (repInfo.cohort) document.getElementById('repCohort').textContent = repInfo.cohort + ' · Week 1';
+
+    const saved = localStorage.getItem('day2_page5_answers');
+    if (saved) {
+      const data = JSON.parse(saved);
+      ['q1','q2','q3','q4','q5','q6','q7'].forEach(key => {
+        if (data[key]) {
+          const el = document.getElementById(key);
+          if (el) {
+            el.value = data[key];
+            answers[key] = data[key];
+            document.getElementById(key+'-count').textContent = data[key].length + ' characters';
+            el.classList.toggle('answered', data[key].length > 10);
+          }
+        }
+      });
+      if (data.rating) {
+        answers.rating = data.rating;
+        selectRating(parseInt(data.rating));
+      }
+    }
+
+    if (localStorage.getItem('day2_complete') === 'true') {
+      submitted = true;
+      document.getElementById('submitForm').style.display = 'none';
+      document.getElementById('submitSuccess').classList.add('show');
+      document.getElementById('nextBtn').disabled = false;
+      document.getElementById('progressNote').textContent = '';
+    }
+
+    checkCompletion();
+  };
+</script>
+</body>
+</html>
